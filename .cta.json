@@ -1,5 +1,5 @@
 {
-  "projectName": "pms-admin",
+  "projectName": "pms-customer",
   "mode": "file-router",
   "typescript": true,
   "tailwind": true,

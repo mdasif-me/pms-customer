@@ -1,6 +1,6 @@
-# PMS Admin - Property Management System Admin Panel
+# PMS Customer - Property Management System Customer Panel
 
-A modern, scalable admin panel built with React 18, TypeScript, and TanStack Router. This is a full-featured starter template for building property management system dashboards with authentication, data management, and real-time features.
+A modern, scalable customer panel built with React 18, TypeScript, and TanStack Router. This is a full-featured starter template for building property management system dashboards with authentication, data management, and real-time features.
 
 **Version:** 1.0.0  
 **Author:** Muhammad Asif  
@@ -152,7 +152,7 @@ Configure in `.env.local`:
 VITE_CLERK_PUBLISHABLE_KEY=your_key_here
 
 # Application
-VITE_APP_TITLE=PMS Admin
+VITE_APP_TITLE=PMS Customer
 VITE_API_BASE_URL=http://localhost:3001
 ```
 
@@ -610,4 +610,5 @@ Files prefixed with `demo` can be safely deleted. They are there to provide a st
 # Learn More
 
 You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).
+
 # pms-customer

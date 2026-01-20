@@ -1,9 +1,9 @@
 {
-  "name": "pms-admin",
+  "name": "pms-customer",
   "private": true,
   "type": "module",
   "version": "1.0.0",
-  "description": "Property Management System Admin Panel",
+  "description": "Property Management System Customer Panel",
   "author": "Muhammad Asif",
   "contributors": [
     {
@@ -14,7 +14,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/ZMC-Technologies-Limited/property-chain-panel-csr"
+    "url": "https://github.com/ZMC-Technologies-Limited/pms-customer.git"
   },
   "license": "MIT",
   "scripts": {

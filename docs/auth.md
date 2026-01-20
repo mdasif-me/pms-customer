@@ -42,13 +42,13 @@ For **page-level** auth (recommended):
 
 ```tsx
 // In route file - use beforeLoad
-export const Route = createFileRoute('/admin')({
+export const Route = createFileRoute('/customer')({
   beforeLoad: ({ context }) => {
-    if (!context.auth.hasRole(['admin'])) {
+    if (!context.auth.hasRole(['customer'])) {
       throw redirect({ to: '/403' })
     }
   },
-  component: AdminPage,
+  component: CustomerPage,
 })
 ```
 
