@@ -492,7 +492,7 @@ export default function DataGridDemo() {
         <CardHeader className="py-4">
           <CardToolbar>
             <h1 className="text-xl text-black/80 font-semibold tracking-tight">
-              Requested sales approval
+              Approved Investment
             </h1>
           </CardToolbar>
           <CardHeading>

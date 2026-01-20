@@ -18,11 +18,8 @@ import { Route as AuthSignupIndexRouteImport } from './routes/auth/signup/index'
 import { Route as AuthLoginIndexRouteImport } from './routes/auth/login/index'
 import { Route as AuthenticatedWithdrawalsIndexRouteImport } from './routes/_authenticated/withdrawals/index'
 import { Route as AuthenticatedSettingsIndexRouteImport } from './routes/_authenticated/settings/index'
-import { Route as AuthenticatedSalesIndexRouteImport } from './routes/_authenticated/sales/index'
-import { Route as AuthenticatedRevenueIndexRouteImport } from './routes/_authenticated/revenue/index'
+import { Route as AuthenticatedRefundIndexRouteImport } from './routes/_authenticated/refund/index'
 import { Route as AuthenticatedProjectsIndexRouteImport } from './routes/_authenticated/projects/index'
-import { Route as AuthenticatedApprovalsIndexRouteImport } from './routes/_authenticated/approvals/index'
-import { Route as AuthenticatedAgentsIndexRouteImport } from './routes/_authenticated/agents/index'
 import { Route as AuthenticatedProjectsPidIndexRouteImport } from './routes/_authenticated/projects/$pid/index'
 
 const AuthRoute = AuthRouteImport.update({
@@ -71,33 +68,16 @@ const AuthenticatedSettingsIndexRoute =
     path: '/settings/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedSalesIndexRoute = AuthenticatedSalesIndexRouteImport.update({
-  id: '/sales/',
-  path: '/sales/',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedRevenueIndexRoute =
-  AuthenticatedRevenueIndexRouteImport.update({
-    id: '/revenue/',
-    path: '/revenue/',
+const AuthenticatedRefundIndexRoute =
+  AuthenticatedRefundIndexRouteImport.update({
+    id: '/refund/',
+    path: '/refund/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedProjectsIndexRoute =
   AuthenticatedProjectsIndexRouteImport.update({
     id: '/projects/',
     path: '/projects/',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedApprovalsIndexRoute =
-  AuthenticatedApprovalsIndexRouteImport.update({
-    id: '/approvals/',
-    path: '/approvals/',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedAgentsIndexRoute =
-  AuthenticatedAgentsIndexRouteImport.update({
-    id: '/agents/',
-    path: '/agents/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedProjectsPidIndexRoute =
@@ -111,11 +91,8 @@ export interface FileRoutesByFullPath {
   '/403': typeof R403Route
   '/auth': typeof AuthRouteWithChildren
   '/': typeof AuthenticatedIndexRoute
-  '/agents': typeof AuthenticatedAgentsIndexRoute
-  '/approvals': typeof AuthenticatedApprovalsIndexRoute
   '/projects': typeof AuthenticatedProjectsIndexRoute
-  '/revenue': typeof AuthenticatedRevenueIndexRoute
-  '/sales': typeof AuthenticatedSalesIndexRoute
+  '/refund': typeof AuthenticatedRefundIndexRoute
   '/settings': typeof AuthenticatedSettingsIndexRoute
   '/withdrawals': typeof AuthenticatedWithdrawalsIndexRoute
   '/auth/login': typeof AuthLoginIndexRoute
@@ -127,11 +104,8 @@ export interface FileRoutesByTo {
   '/403': typeof R403Route
   '/auth': typeof AuthRouteWithChildren
   '/': typeof AuthenticatedIndexRoute
-  '/agents': typeof AuthenticatedAgentsIndexRoute
-  '/approvals': typeof AuthenticatedApprovalsIndexRoute
   '/projects': typeof AuthenticatedProjectsIndexRoute
-  '/revenue': typeof AuthenticatedRevenueIndexRoute
-  '/sales': typeof AuthenticatedSalesIndexRoute
+  '/refund': typeof AuthenticatedRefundIndexRoute
   '/settings': typeof AuthenticatedSettingsIndexRoute
   '/withdrawals': typeof AuthenticatedWithdrawalsIndexRoute
   '/auth/login': typeof AuthLoginIndexRoute
@@ -145,11 +119,8 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/_authenticated/': typeof AuthenticatedIndexRoute
-  '/_authenticated/agents/': typeof AuthenticatedAgentsIndexRoute
-  '/_authenticated/approvals/': typeof AuthenticatedApprovalsIndexRoute
   '/_authenticated/projects/': typeof AuthenticatedProjectsIndexRoute
-  '/_authenticated/revenue/': typeof AuthenticatedRevenueIndexRoute
-  '/_authenticated/sales/': typeof AuthenticatedSalesIndexRoute
+  '/_authenticated/refund/': typeof AuthenticatedRefundIndexRoute
   '/_authenticated/settings/': typeof AuthenticatedSettingsIndexRoute
   '/_authenticated/withdrawals/': typeof AuthenticatedWithdrawalsIndexRoute
   '/auth/login/': typeof AuthLoginIndexRoute
@@ -163,11 +134,8 @@ export interface FileRouteTypes {
     | '/403'
     | '/auth'
     | '/'
-    | '/agents'
-    | '/approvals'
     | '/projects'
-    | '/revenue'
-    | '/sales'
+    | '/refund'
     | '/settings'
     | '/withdrawals'
     | '/auth/login'
@@ -179,11 +147,8 @@ export interface FileRouteTypes {
     | '/403'
     | '/auth'
     | '/'
-    | '/agents'
-    | '/approvals'
     | '/projects'
-    | '/revenue'
-    | '/sales'
+    | '/refund'
     | '/settings'
     | '/withdrawals'
     | '/auth/login'
@@ -196,11 +161,8 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/'
-    | '/_authenticated/agents/'
-    | '/_authenticated/approvals/'
     | '/_authenticated/projects/'
-    | '/_authenticated/revenue/'
-    | '/_authenticated/sales/'
+    | '/_authenticated/refund/'
     | '/_authenticated/settings/'
     | '/_authenticated/withdrawals/'
     | '/auth/login/'
@@ -280,18 +242,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/sales/': {
-      id: '/_authenticated/sales/'
-      path: '/sales'
-      fullPath: '/sales'
-      preLoaderRoute: typeof AuthenticatedSalesIndexRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/revenue/': {
-      id: '/_authenticated/revenue/'
-      path: '/revenue'
-      fullPath: '/revenue'
-      preLoaderRoute: typeof AuthenticatedRevenueIndexRouteImport
+    '/_authenticated/refund/': {
+      id: '/_authenticated/refund/'
+      path: '/refund'
+      fullPath: '/refund'
+      preLoaderRoute: typeof AuthenticatedRefundIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/projects/': {
@@ -299,20 +254,6 @@ declare module '@tanstack/react-router' {
       path: '/projects'
       fullPath: '/projects'
       preLoaderRoute: typeof AuthenticatedProjectsIndexRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/approvals/': {
-      id: '/_authenticated/approvals/'
-      path: '/approvals'
-      fullPath: '/approvals'
-      preLoaderRoute: typeof AuthenticatedApprovalsIndexRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/agents/': {
-      id: '/_authenticated/agents/'
-      path: '/agents'
-      fullPath: '/agents'
-      preLoaderRoute: typeof AuthenticatedAgentsIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/projects/$pid/': {
@@ -327,11 +268,8 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteChildren {
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
-  AuthenticatedAgentsIndexRoute: typeof AuthenticatedAgentsIndexRoute
-  AuthenticatedApprovalsIndexRoute: typeof AuthenticatedApprovalsIndexRoute
   AuthenticatedProjectsIndexRoute: typeof AuthenticatedProjectsIndexRoute
-  AuthenticatedRevenueIndexRoute: typeof AuthenticatedRevenueIndexRoute
-  AuthenticatedSalesIndexRoute: typeof AuthenticatedSalesIndexRoute
+  AuthenticatedRefundIndexRoute: typeof AuthenticatedRefundIndexRoute
   AuthenticatedSettingsIndexRoute: typeof AuthenticatedSettingsIndexRoute
   AuthenticatedWithdrawalsIndexRoute: typeof AuthenticatedWithdrawalsIndexRoute
   AuthenticatedProjectsPidIndexRoute: typeof AuthenticatedProjectsPidIndexRoute
@@ -339,11 +277,8 @@ interface AuthenticatedRouteChildren {
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
-  AuthenticatedAgentsIndexRoute: AuthenticatedAgentsIndexRoute,
-  AuthenticatedApprovalsIndexRoute: AuthenticatedApprovalsIndexRoute,
   AuthenticatedProjectsIndexRoute: AuthenticatedProjectsIndexRoute,
-  AuthenticatedRevenueIndexRoute: AuthenticatedRevenueIndexRoute,
-  AuthenticatedSalesIndexRoute: AuthenticatedSalesIndexRoute,
+  AuthenticatedRefundIndexRoute: AuthenticatedRefundIndexRoute,
   AuthenticatedSettingsIndexRoute: AuthenticatedSettingsIndexRoute,
   AuthenticatedWithdrawalsIndexRoute: AuthenticatedWithdrawalsIndexRoute,
   AuthenticatedProjectsPidIndexRoute: AuthenticatedProjectsPidIndexRoute,
