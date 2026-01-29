@@ -14,10 +14,13 @@ export const investmentColumns: ColumnDef<IInvestmentItem, any>[] = [
     header: ({ column }) => (
       <DataGridColumnHeader title="No" visibility={true} column={column} />
     ),
-    cell: ({ row, table }) =>
-      (table
-        .getSortedRowModel()
-        ?.flatRows?.findIndex((flatRow) => flatRow.id === row.id) || 0) + 1,
+    cell: ({ row, table }) => {
+      const index =
+        table
+          .getSortedRowModel()
+          ?.flatRows?.findIndex((flatRow) => flatRow.id === row.id) ?? -1
+      return index >= 0 ? index + 1 : 'N/A'
+    },
     enableSorting: false,
     size: 60,
     enableResizing: false,
@@ -40,7 +43,9 @@ export const investmentColumns: ColumnDef<IInvestmentItem, any>[] = [
               src={row.original.profile_picture}
               alt={row.original.full_name}
             />
-            <AvatarFallback>{row.original.full_name[0]}</AvatarFallback>
+            <AvatarFallback>
+              {row.original.full_name?.[0] ?? '?'}
+            </AvatarFallback>{' '}
           </Avatar>
           <div className="font-medium text-foreground">
             {row.original.full_name}

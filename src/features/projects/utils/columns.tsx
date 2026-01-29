@@ -12,11 +12,7 @@ export const columns: ColumnDef<IProjectList>[] = [
   {
     id: 'no',
     header: ({ column }) => (
-      <DataGridColumnHeader
-        title="No Of Projects"
-        visibility={true}
-        column={column}
-      />
+      <DataGridColumnHeader title="S/N" visibility={true} column={column} />
     ),
     cell: ({ row, table }) =>
       (table
