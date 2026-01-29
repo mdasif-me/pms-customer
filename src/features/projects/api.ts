@@ -1,7 +1,10 @@
 import type { IApiResponse, IApiResponseSingle } from '@/interface'
 import { apiClient } from '../../lib/api-client'
-import type { IListProjectsParams, IProjectList } from './interface'
-import type { TCreateProject } from './schema'
+import type {
+  IListProjectsParams,
+  IProjectInvestmentData,
+  IProjectList,
+} from './interface'
 
 const buildQueryString = (params: IListProjectsParams): string => {
   const queryParams = new URLSearchParams()
@@ -26,16 +29,11 @@ export const projectApi = {
     return apiClient.get<IApiResponseSingle<IProjectList>>(`/p/${pid}`)
   },
 
-  createProject: (
-    data: TCreateProject,
-  ): Promise<IApiResponse<IProjectList>> => {
-    return apiClient.post<IApiResponse<IProjectList>>('/p/c', data)
-  },
-
-  updateProject: (
+  getProjectInvestments: (
     pid: string,
-    data: Partial<TCreateProject>,
-  ): Promise<IApiResponse<IProjectList>> => {
-    return apiClient.patch<IApiResponse<IProjectList>>(`/p/${pid}`, data)
+  ): Promise<{ edge: { node: string; data: IProjectInvestmentData } }> => {
+    return apiClient.get<{
+      edge: { node: string; data: IProjectInvestmentData }
+    }>(`/r/p/${pid}`)
   },
 }

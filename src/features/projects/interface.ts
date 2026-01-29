@@ -46,3 +46,22 @@ export interface IListProjectsParams {
   limit?: number
   search?: string
 }
+
+export interface IInvestmentItem {
+  booking_id: string
+  full_name: string
+  profile_picture: string
+  project_name: string
+  allotment_name: string
+  total_amount: number
+  total_paid: number
+  sell_by: string
+  received_at: string
+  status: 'approved' | 'pending' | 'rejected'
+}
+
+export interface IProjectInvestmentData {
+  bookings: IInvestmentItem[]
+  installments: IInvestmentItem[]
+  full_payment: IInvestmentItem | null
+}

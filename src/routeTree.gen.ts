@@ -19,6 +19,7 @@ import { Route as AuthLoginIndexRouteImport } from './routes/auth/login/index'
 import { Route as AuthenticatedWithdrawalsIndexRouteImport } from './routes/_authenticated/withdrawals/index'
 import { Route as AuthenticatedSettingsIndexRouteImport } from './routes/_authenticated/settings/index'
 import { Route as AuthenticatedRefundIndexRouteImport } from './routes/_authenticated/refund/index'
+import { Route as AuthenticatedProjectsIdRouteImport } from './routes/_authenticated/projects/$id'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -72,11 +73,17 @@ const AuthenticatedRefundIndexRoute =
     path: '/refund/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedProjectsIdRoute = AuthenticatedProjectsIdRouteImport.update({
+  id: '/projects/$id',
+  path: '/projects/$id',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/403': typeof R403Route
   '/auth': typeof AuthRouteWithChildren
   '/': typeof AuthenticatedIndexRoute
+  '/projects/$id': typeof AuthenticatedProjectsIdRoute
   '/refund': typeof AuthenticatedRefundIndexRoute
   '/settings': typeof AuthenticatedSettingsIndexRoute
   '/withdrawals': typeof AuthenticatedWithdrawalsIndexRoute
@@ -88,6 +95,7 @@ export interface FileRoutesByTo {
   '/403': typeof R403Route
   '/auth': typeof AuthRouteWithChildren
   '/': typeof AuthenticatedIndexRoute
+  '/projects/$id': typeof AuthenticatedProjectsIdRoute
   '/refund': typeof AuthenticatedRefundIndexRoute
   '/settings': typeof AuthenticatedSettingsIndexRoute
   '/withdrawals': typeof AuthenticatedWithdrawalsIndexRoute
@@ -101,6 +109,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/projects/$id': typeof AuthenticatedProjectsIdRoute
   '/_authenticated/refund/': typeof AuthenticatedRefundIndexRoute
   '/_authenticated/settings/': typeof AuthenticatedSettingsIndexRoute
   '/_authenticated/withdrawals/': typeof AuthenticatedWithdrawalsIndexRoute
@@ -114,6 +123,7 @@ export interface FileRouteTypes {
     | '/403'
     | '/auth'
     | '/'
+    | '/projects/$id'
     | '/refund'
     | '/settings'
     | '/withdrawals'
@@ -125,6 +135,7 @@ export interface FileRouteTypes {
     | '/403'
     | '/auth'
     | '/'
+    | '/projects/$id'
     | '/refund'
     | '/settings'
     | '/withdrawals'
@@ -137,6 +148,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/'
+    | '/_authenticated/projects/$id'
     | '/_authenticated/refund/'
     | '/_authenticated/settings/'
     | '/_authenticated/withdrawals/'
@@ -223,11 +235,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRefundIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/projects/$id': {
+      id: '/_authenticated/projects/$id'
+      path: '/projects/$id'
+      fullPath: '/projects/$id'
+      preLoaderRoute: typeof AuthenticatedProjectsIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
 interface AuthenticatedRouteChildren {
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedProjectsIdRoute: typeof AuthenticatedProjectsIdRoute
   AuthenticatedRefundIndexRoute: typeof AuthenticatedRefundIndexRoute
   AuthenticatedSettingsIndexRoute: typeof AuthenticatedSettingsIndexRoute
   AuthenticatedWithdrawalsIndexRoute: typeof AuthenticatedWithdrawalsIndexRoute
@@ -235,6 +255,7 @@ interface AuthenticatedRouteChildren {
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedProjectsIdRoute: AuthenticatedProjectsIdRoute,
   AuthenticatedRefundIndexRoute: AuthenticatedRefundIndexRoute,
   AuthenticatedSettingsIndexRoute: AuthenticatedSettingsIndexRoute,
   AuthenticatedWithdrawalsIndexRoute: AuthenticatedWithdrawalsIndexRoute,

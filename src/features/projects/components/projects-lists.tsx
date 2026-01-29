@@ -26,7 +26,6 @@ import { Search, X } from 'lucide-react'
 import { useProjects } from '../hooks'
 import type { IProjectList } from '../interface'
 import { columns } from '../utils/columns'
-import Project from './project'
 
 export default function ProjectsLists() {
   const [pagination, setPagination] = useState<PaginationState>({
@@ -96,33 +95,30 @@ export default function ProjectsLists() {
             </h1>
           </CardToolbar>
           <CardHeading>
-            <div className="flex w-full items-center gap-2.5">
-              <div className="relative w-full">
-                <Search className="size-4 text-muted-foreground absolute start-3 top-1/2 -translate-y-1/2" />
-                <Input
-                  placeholder="Search..."
-                  value={inputValue}
-                  onChange={(e) => {
-                    setInputValue(e.target.value)
-                    debounced(e.target.value)
+            <div className="relative w-full">
+              <Search className="size-4 text-muted-foreground absolute start-3 top-1/2 -translate-y-1/2" />
+              <Input
+                placeholder="Search..."
+                value={inputValue}
+                onChange={(e) => {
+                  setInputValue(e.target.value)
+                  debounced(e.target.value)
+                }}
+                className="ps-9 md:w-xs w-full focus-visible:ring-0 shadow-none"
+              />
+              {inputValue.length > 0 && (
+                <Button
+                  mode="icon"
+                  variant="ghost"
+                  className="absolute end-1.5 top-1/2 -translate-y-1/2 h-6 w-6"
+                  onClick={() => {
+                    setInputValue('')
+                    setSearchQuery('')
                   }}
-                  className="ps-9 md:w-xs w-full focus-visible:ring-0 shadow-none"
-                />
-                {inputValue.length > 0 && (
-                  <Button
-                    mode="icon"
-                    variant="ghost"
-                    className="absolute end-1.5 top-1/2 -translate-y-1/2 h-6 w-6"
-                    onClick={() => {
-                      setInputValue('')
-                      setSearchQuery('')
-                    }}
-                  >
-                    <X />
-                  </Button>
-                )}
-              </div>
-              <Project />
+                >
+                  <X />
+                </Button>
+              )}
             </div>
           </CardHeading>
         </CardHeader>
