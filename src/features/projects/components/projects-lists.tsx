@@ -25,9 +25,19 @@ import {
 import { Search, X } from 'lucide-react'
 import { useProjects } from '../hooks'
 import type { IProjectList } from '../interface'
-import { columns } from '../utils/columns'
+import { createColumns } from '../utils/columns'
 
-export default function ProjectsLists() {
+type NavigationType = 'investment' | 'withdrawal'
+
+interface ProjectsListsProps {
+  navigationType?: NavigationType
+  title?: string
+}
+
+export default function ProjectsLists({
+  navigationType = 'investment',
+  title = 'My Projects',
+}: ProjectsListsProps) {
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
@@ -52,6 +62,8 @@ export default function ProjectsLists() {
   const metadata = projectsData?.data?.metadata
   const totalItems = metadata?.total_items || 0
   const totalPages = metadata?.total_pages || 1
+
+  const columns = useMemo(() => createColumns(navigationType), [navigationType])
 
   const [columnOrder, setColumnOrder] = useState<string[]>(
     columns.map((column) => column.id as string),
@@ -91,7 +103,7 @@ export default function ProjectsLists() {
         <CardHeader className="py-4">
           <CardToolbar>
             <h1 className="text-xl text-foreground/80 font-semibold tracking-tight">
-              My Projects
+              {title}
             </h1>
           </CardToolbar>
           <CardHeading>

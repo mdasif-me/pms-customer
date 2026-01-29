@@ -1,3 +1,4 @@
+import { Badge } from '@/components/ui/badge'
 import {
   Avatar,
   AvatarFallback,
@@ -5,33 +6,28 @@ import {
 } from '@/components/ui/base-avatar'
 import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header'
 import { type ColumnDef } from '@tanstack/react-table'
-import type { IProjectList } from '../interface'
-import { ActionsCell } from '../utils/action-cell'
+import type { IWithdrawalItem } from '../interface'
 
-type NavigationType = 'investment' | 'withdrawal'
-
-export const createColumns = (
-  navigationType: NavigationType = 'investment',
-): ColumnDef<IProjectList>[] => [
+export const withdrawalColumns: ColumnDef<IWithdrawalItem, any>[] = [
   {
     id: 'no',
     header: ({ column }) => (
-      <DataGridColumnHeader title="S/N" visibility={true} column={column} />
+      <DataGridColumnHeader title="No" visibility={true} column={column} />
     ),
     cell: ({ row, table }) =>
       (table
         .getSortedRowModel()
         ?.flatRows?.findIndex((flatRow) => flatRow.id === row.id) || 0) + 1,
     enableSorting: false,
-    size: 100,
+    size: 60,
     enableResizing: false,
   },
   {
-    accessorKey: 'title',
-    id: 'title',
+    accessorKey: 'full_name',
+    id: 'full_name',
     header: ({ column }) => (
       <DataGridColumnHeader
-        title="Project Profile"
+        title="Customer Name"
         visibility={true}
         column={column}
       />
@@ -41,19 +37,19 @@ export const createColumns = (
         <div className="flex items-center gap-3">
           <Avatar className="size-8">
             <AvatarImage
-              src={row.original.gallery?.[0]}
-              alt={row.original.title}
+              src={row.original.profile_picture || undefined}
+              alt={row.original.full_name}
             />
-            <AvatarFallback>{row.original.title[0]}</AvatarFallback>
+            <AvatarFallback>{row.original.full_name[0]}</AvatarFallback>
           </Avatar>
           <div className="font-medium text-foreground">
-            {row.original.title}
+            {row.original.full_name}
           </div>
         </div>
       )
     },
     size: 250,
-    enableSorting: true,
+    enableSorting: false,
     enableHiding: false,
     enableResizing: true,
   },
@@ -67,32 +63,6 @@ export const createColumns = (
       return (
         <div className="font-medium text-foreground">
           {row.original.allotment_name}
-        </div>
-      )
-    },
-    size: 150,
-    enableSorting: false,
-    enableHiding: true,
-    enableResizing: true,
-  },
-  {
-    accessorKey: 'total_price',
-    id: 'total_price',
-    header: ({ column }) => (
-      <DataGridColumnHeader
-        title="Total Price"
-        visibility={true}
-        column={column}
-      />
-    ),
-    cell: ({ row }) => {
-      return (
-        <div className="font-medium text-foreground">
-          {row.original.total_price?.toLocaleString('en-IN', {
-            style: 'currency',
-            currency: 'BDT',
-            minimumFractionDigits: 0,
-          }) || 'N/A'}
         </div>
       )
     },
@@ -128,16 +98,56 @@ export const createColumns = (
     enableResizing: true,
   },
   {
-    id: 'actions',
+    accessorKey: 'total_withdrawal',
+    id: 'total_withdrawal',
     header: ({ column }) => (
-      <DataGridColumnHeader title="Action" visibility={true} column={column} />
+      <DataGridColumnHeader
+        title="Withdrawal Amount"
+        visibility={true}
+        column={column}
+      />
     ),
-    cell: ({ row }) => (
-      <ActionsCell row={row} navigationType={navigationType} />
-    ),
-    size: 60,
+    cell: ({ row }) => {
+      return (
+        <div className="font-medium text-foreground">
+          {row.original.total_withdrawal?.toLocaleString('en-IN', {
+            style: 'currency',
+            currency: 'BDT',
+            minimumFractionDigits: 0,
+          }) || 'N/A'}
+        </div>
+      )
+    },
+    size: 150,
     enableSorting: false,
-    enableHiding: false,
-    enableResizing: false,
+    enableHiding: true,
+    enableResizing: true,
+  },
+  {
+    accessorKey: 'status',
+    id: 'status',
+    header: ({ column }) => (
+      <DataGridColumnHeader title="Status" visibility={true} column={column} />
+    ),
+    cell: ({ row }) => {
+      const statusColors = {
+        approved: 'success',
+        pending: 'warning',
+        rejected: 'destructive',
+      } as const
+
+      return (
+        <Badge
+          variant={statusColors[row.original.status]}
+          className="text-white"
+        >
+          {row.original.status?.toUpperCase() || 'N/A'}
+        </Badge>
+      )
+    },
+    size: 120,
+    enableSorting: true,
+    enableHiding: true,
+    enableResizing: true,
   },
 ]

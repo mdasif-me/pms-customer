@@ -1,3 +1,4 @@
+import ProjectsLists from '@/features/projects/components/projects-lists'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_authenticated/withdrawals/')({
@@ -5,5 +6,9 @@ export const Route = createFileRoute('/_authenticated/withdrawals/')({
 })
 
 function RouteComponent() {
-  return <div>Hello "/withdrawals/"!</div>
+  return (
+    <div>
+      <ProjectsLists navigationType="withdrawal" title="Withdrawals" />
+    </div>
+  )
 }

@@ -17,21 +17,21 @@ const options = linkOptions([
     label: 'Projects',
     icon: ProjectStroke,
     solidicon: ProjectSolid,
-    activeOptions: { exact: true },
+    exact: false,
   },
   {
     to: '/withdrawals',
     label: 'Withdrawals',
     icon: WithdrawalsIcon,
     solidicon: WithdrawalsSolid,
-    activeOptions: { exact: true },
+    exact: false,
   },
   {
     to: '/refund',
     label: 'Refund',
     icon: Refund,
     solidicon: RefundSolid,
-    activeOptions: { exact: true },
+    exact: false,
   },
 ])
 export default options
