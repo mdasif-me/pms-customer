@@ -1,6 +1,5 @@
 import { Card, CardContent } from '@/components/ui/card'
 import type { IUser } from '@/features/auth/types'
-import profile from '../../../../public/logo-icon.svg'
 import UpdateProfile from './update-profile'
 
 export default function UserProfile({ user }: { user: IUser }) {
@@ -10,7 +9,7 @@ export default function UserProfile({ user }: { user: IUser }) {
         <div className="flex items-center sm:gap-4 gap-2">
           <img
             className="sm:w-24 sm:h-24 shrink-0 object-center rounded-xl object-cover bg-muted"
-            src={user.company_info?.logo || profile}
+            src={user.company_info?.logo || '/logo-icon.svg'}
             alt={user.company_info?.name || 'User Profile'}
           />
           <article>

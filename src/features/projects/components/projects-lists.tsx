@@ -114,7 +114,7 @@ export default function ProjectsLists() {
                   onClick={() => {
                     debounced.cancel()
                     setInputValue('')
-                    debounced('')
+                    setSearchQuery('')
                   }}
                 >
                   <X />
