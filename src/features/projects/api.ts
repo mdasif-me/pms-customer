@@ -20,7 +20,7 @@ export const projectApi = {
     params: IListProjectsParams,
   ): Promise<IApiResponse<IProjectList>> => {
     const queryString = buildQueryString(params)
-    const endpoint = queryString ? `/p/l?${queryString}` : '/p/l'
+    const endpoint = queryString ? `/r/p/l?${queryString}` : '/r/p/l'
     return apiClient.get<IApiResponse<IProjectList>>(endpoint)
   },
 

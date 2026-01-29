@@ -30,20 +30,15 @@ export interface ICompany {
 }
 
 export interface IProjectList {
+  booking_id: string
   id: string
   title: string
   gallery: string[]
-  location: string
-  description: string
-  commission_rate: number
-  total_shares: number
-  remaining_shares: number
-  share_price: number
-  allotments: IAllotment[]
-  company: ICompany
-  staffs: string[]
+  allotment_name: string
+  total_price: number
+  total_paid: number
+  sell_by: string
   created_at: string
-  updated_at: string
 }
 
 export interface IListProjectsParams {

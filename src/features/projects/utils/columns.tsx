@@ -5,7 +5,6 @@ import {
 } from '@/components/ui/base-avatar'
 import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header'
 import { type ColumnDef } from '@tanstack/react-table'
-import Allotment from '../components/allotment'
 import type { IProjectList } from '../interface'
 import { ActionsCell } from '../utils/action-cell'
 
@@ -28,7 +27,7 @@ export const columns: ColumnDef<IProjectList>[] = [
     id: 'title',
     header: ({ column }) => (
       <DataGridColumnHeader
-        title="Project Profile"
+        title="Project Name"
         visibility={true}
         column={column}
       />
@@ -38,16 +37,13 @@ export const columns: ColumnDef<IProjectList>[] = [
         <div className="flex items-center gap-3">
           <Avatar className="size-8">
             <AvatarImage
-              src={row.original.gallery[0]}
+              src={row.original.gallery?.[0]}
               alt={row.original.title}
             />
             <AvatarFallback>{row.original.title[0]}</AvatarFallback>
           </Avatar>
-          <div className="space-y-px">
-            <div className="font-medium text-foreground">
-              {row.original.title}
-            </div>
-            <div className="text-muted-foreground">{row.original.location}</div>
+          <div className="font-medium text-foreground">
+            {row.original.title}
           </div>
         </div>
       )
@@ -58,55 +54,29 @@ export const columns: ColumnDef<IProjectList>[] = [
     enableResizing: true,
   },
   {
-    accessorKey: 'allotments',
-    id: 'allotments',
+    accessorKey: 'allotment_name',
+    id: 'allotment_name',
     header: ({ column }) => (
-      <DataGridColumnHeader
-        title="Packages"
-        visibility={true}
-        column={column}
-      />
+      <DataGridColumnHeader title="Package" visibility={true} column={column} />
     ),
     cell: ({ row }) => {
       return (
-        <div className="flex w-full justify-between items-center gap-1.5">
-          <div className="font-medium text-foreground">
-            <span className="text-xs">
-              {row.original.allotments.length > 0 ? (
-                `(${row.original.allotments.length}) `
-              ) : (
-                <p className="text-muted-foreground">No Packages</p>
-              )}
-            </span>
-            {row.original.allotments
-              .map((allotment: any) => allotment.name)
-              .join(', ')}
-          </div>
-          <div>
-            {row.original.allotments.length > 0 ? (
-              <Allotment row={row} />
-            ) : (
-              <Allotment row={row} />
-            )}
-          </div>
+        <div className="font-medium text-foreground">
+          {row.original.allotment_name}
         </div>
       )
     },
-    size: 200,
-    meta: {
-      headerClassName: '',
-      cellClassName: 'text-start',
-    },
+    size: 150,
     enableSorting: false,
     enableHiding: true,
     enableResizing: true,
   },
   {
-    accessorKey: 'share_price',
-    id: 'share_price',
+    accessorKey: 'total_price',
+    id: 'total_price',
     header: ({ column }) => (
       <DataGridColumnHeader
-        title="Starting Price (Sales)"
+        title="Total Price"
         visibility={true}
         column={column}
       />
@@ -114,25 +84,25 @@ export const columns: ColumnDef<IProjectList>[] = [
     cell: ({ row }) => {
       return (
         <div className="font-medium text-foreground">
-          {row.original.share_price.toLocaleString('en-IN', {
+          {row.original.total_price?.toLocaleString('en-IN', {
             style: 'currency',
             currency: 'BDT',
             minimumFractionDigits: 0,
-          })}
+          }) || 'N/A'}
         </div>
       )
     },
-    size: 100,
+    size: 150,
     enableSorting: false,
     enableHiding: true,
     enableResizing: true,
   },
   {
-    accessorKey: 'company',
-    id: 'company',
+    accessorKey: 'total_paid',
+    id: 'total_paid',
     header: ({ column }) => (
       <DataGridColumnHeader
-        title="Project By"
+        title="Amount Paid"
         visibility={true}
         column={column}
       />
@@ -140,15 +110,33 @@ export const columns: ColumnDef<IProjectList>[] = [
     cell: ({ row }) => {
       return (
         <div className="font-medium text-foreground">
-          {row.original.company.company_info.name}
+          {row.original.total_paid?.toLocaleString('en-IN', {
+            style: 'currency',
+            currency: 'BDT',
+            minimumFractionDigits: 0,
+          }) || 'N/A'}
         </div>
       )
     },
-    size: 200,
-    meta: {
-      headerClassName: '',
-      cellClassName: 'text-start',
+    size: 150,
+    enableSorting: false,
+    enableHiding: true,
+    enableResizing: true,
+  },
+  {
+    accessorKey: 'sell_by',
+    id: 'sell_by',
+    header: ({ column }) => (
+      <DataGridColumnHeader title="Sold By" visibility={true} column={column} />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="font-medium text-foreground">
+          {row.original.sell_by}
+        </div>
+      )
     },
+    size: 150,
     enableSorting: false,
     enableHiding: true,
     enableResizing: true,

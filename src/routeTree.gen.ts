@@ -19,8 +19,6 @@ import { Route as AuthLoginIndexRouteImport } from './routes/auth/login/index'
 import { Route as AuthenticatedWithdrawalsIndexRouteImport } from './routes/_authenticated/withdrawals/index'
 import { Route as AuthenticatedSettingsIndexRouteImport } from './routes/_authenticated/settings/index'
 import { Route as AuthenticatedRefundIndexRouteImport } from './routes/_authenticated/refund/index'
-import { Route as AuthenticatedProjectsIndexRouteImport } from './routes/_authenticated/projects/index'
-import { Route as AuthenticatedProjectsPidIndexRouteImport } from './routes/_authenticated/projects/$pid/index'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -74,44 +72,28 @@ const AuthenticatedRefundIndexRoute =
     path: '/refund/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedProjectsIndexRoute =
-  AuthenticatedProjectsIndexRouteImport.update({
-    id: '/projects/',
-    path: '/projects/',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedProjectsPidIndexRoute =
-  AuthenticatedProjectsPidIndexRouteImport.update({
-    id: '/projects/$pid/',
-    path: '/projects/$pid/',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/403': typeof R403Route
   '/auth': typeof AuthRouteWithChildren
   '/': typeof AuthenticatedIndexRoute
-  '/projects': typeof AuthenticatedProjectsIndexRoute
   '/refund': typeof AuthenticatedRefundIndexRoute
   '/settings': typeof AuthenticatedSettingsIndexRoute
   '/withdrawals': typeof AuthenticatedWithdrawalsIndexRoute
   '/auth/login': typeof AuthLoginIndexRoute
   '/auth/signup': typeof AuthSignupIndexRoute
   '/auth/verify': typeof AuthVerifyIndexRoute
-  '/projects/$pid': typeof AuthenticatedProjectsPidIndexRoute
 }
 export interface FileRoutesByTo {
   '/403': typeof R403Route
   '/auth': typeof AuthRouteWithChildren
   '/': typeof AuthenticatedIndexRoute
-  '/projects': typeof AuthenticatedProjectsIndexRoute
   '/refund': typeof AuthenticatedRefundIndexRoute
   '/settings': typeof AuthenticatedSettingsIndexRoute
   '/withdrawals': typeof AuthenticatedWithdrawalsIndexRoute
   '/auth/login': typeof AuthLoginIndexRoute
   '/auth/signup': typeof AuthSignupIndexRoute
   '/auth/verify': typeof AuthVerifyIndexRoute
-  '/projects/$pid': typeof AuthenticatedProjectsPidIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -119,14 +101,12 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/_authenticated/': typeof AuthenticatedIndexRoute
-  '/_authenticated/projects/': typeof AuthenticatedProjectsIndexRoute
   '/_authenticated/refund/': typeof AuthenticatedRefundIndexRoute
   '/_authenticated/settings/': typeof AuthenticatedSettingsIndexRoute
   '/_authenticated/withdrawals/': typeof AuthenticatedWithdrawalsIndexRoute
   '/auth/login/': typeof AuthLoginIndexRoute
   '/auth/signup/': typeof AuthSignupIndexRoute
   '/auth/verify/': typeof AuthVerifyIndexRoute
-  '/_authenticated/projects/$pid/': typeof AuthenticatedProjectsPidIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -134,41 +114,35 @@ export interface FileRouteTypes {
     | '/403'
     | '/auth'
     | '/'
-    | '/projects'
     | '/refund'
     | '/settings'
     | '/withdrawals'
     | '/auth/login'
     | '/auth/signup'
     | '/auth/verify'
-    | '/projects/$pid'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/403'
     | '/auth'
     | '/'
-    | '/projects'
     | '/refund'
     | '/settings'
     | '/withdrawals'
     | '/auth/login'
     | '/auth/signup'
     | '/auth/verify'
-    | '/projects/$pid'
   id:
     | '__root__'
     | '/403'
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/'
-    | '/_authenticated/projects/'
     | '/_authenticated/refund/'
     | '/_authenticated/settings/'
     | '/_authenticated/withdrawals/'
     | '/auth/login/'
     | '/auth/signup/'
     | '/auth/verify/'
-    | '/_authenticated/projects/$pid/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -249,39 +223,21 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRefundIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/projects/': {
-      id: '/_authenticated/projects/'
-      path: '/projects'
-      fullPath: '/projects'
-      preLoaderRoute: typeof AuthenticatedProjectsIndexRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/projects/$pid/': {
-      id: '/_authenticated/projects/$pid/'
-      path: '/projects/$pid'
-      fullPath: '/projects/$pid'
-      preLoaderRoute: typeof AuthenticatedProjectsPidIndexRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
   }
 }
 
 interface AuthenticatedRouteChildren {
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
-  AuthenticatedProjectsIndexRoute: typeof AuthenticatedProjectsIndexRoute
   AuthenticatedRefundIndexRoute: typeof AuthenticatedRefundIndexRoute
   AuthenticatedSettingsIndexRoute: typeof AuthenticatedSettingsIndexRoute
   AuthenticatedWithdrawalsIndexRoute: typeof AuthenticatedWithdrawalsIndexRoute
-  AuthenticatedProjectsPidIndexRoute: typeof AuthenticatedProjectsPidIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
-  AuthenticatedProjectsIndexRoute: AuthenticatedProjectsIndexRoute,
   AuthenticatedRefundIndexRoute: AuthenticatedRefundIndexRoute,
   AuthenticatedSettingsIndexRoute: AuthenticatedSettingsIndexRoute,
   AuthenticatedWithdrawalsIndexRoute: AuthenticatedWithdrawalsIndexRoute,
-  AuthenticatedProjectsPidIndexRoute: AuthenticatedProjectsPidIndexRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(

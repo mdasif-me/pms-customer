@@ -109,7 +109,7 @@ export default function ProjectsLists() {
         <CardHeader className="py-4">
           <CardToolbar>
             <h1 className="text-xl text-foreground/80 font-semibold tracking-tight">
-              Our Projects
+              My Bookings
             </h1>
           </CardToolbar>
           <CardHeading>
