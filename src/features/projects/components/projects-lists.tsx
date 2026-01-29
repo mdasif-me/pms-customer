@@ -19,9 +19,7 @@ import {
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
-  getSortedRowModel,
   type PaginationState,
-  type SortingState,
   useReactTable,
 } from '@tanstack/react-table'
 import { Search, X } from 'lucide-react'
@@ -35,28 +33,17 @@ export default function ProjectsLists() {
     pageIndex: 0,
     pageSize: 10,
   })
-  const [sorting, setSorting] = useState<SortingState>([
-    { id: 'title', desc: false },
-  ])
   const [searchQuery, setSearchQuery] = useState('')
   const [inputValue, setInputValue] = useState('')
   const debounced = useDebounceCallback(setSearchQuery, 500)
 
   const offset = pagination.pageIndex + 1
   const limit = pagination.pageSize
-  const sortBy = sorting[0]?.id as
-    | 'title'
-    | 'created_at'
-    | 'updated_at'
-    | undefined
-  const sortOrder = sorting[0]?.desc ? 'desc' : 'asc'
 
   const { data: projectsData, isLoading } = useProjects({
     offset,
     limit,
     search: searchQuery || undefined,
-    sort_by: sortBy,
-    sort_order: sortOrder,
   })
 
   const filteredData = useMemo(() => {
@@ -78,19 +65,15 @@ export default function ProjectsLists() {
     getRowId: (row: IProjectList) => row.id,
     state: {
       pagination,
-      sorting,
       columnOrder,
     },
     columnResizeMode: 'onChange',
     onColumnOrderChange: setColumnOrder,
     onPaginationChange: setPagination,
-    onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
     manualPagination: true,
-    manualSorting: true,
   })
 
   return (
@@ -109,7 +92,7 @@ export default function ProjectsLists() {
         <CardHeader className="py-4">
           <CardToolbar>
             <h1 className="text-xl text-foreground/80 font-semibold tracking-tight">
-              My Bookings
+              My Projects
             </h1>
           </CardToolbar>
           <CardHeading>

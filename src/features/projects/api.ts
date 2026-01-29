@@ -10,8 +10,6 @@ const buildQueryString = (params: IListProjectsParams): string => {
   if (params.limit !== undefined)
     queryParams.append('limit', String(params.limit))
   if (params.search) queryParams.append('search', params.search)
-  if (params.sort_by) queryParams.append('sort_by', params.sort_by)
-  if (params.sort_order) queryParams.append('sort_order', params.sort_order)
   return queryParams.toString()
 }
 

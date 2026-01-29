@@ -45,6 +45,4 @@ export interface IListProjectsParams {
   offset?: number
   limit?: number
   search?: string
-  sort_by?: 'title' | 'created_at' | 'updated_at'
-  sort_order?: 'asc' | 'desc'
 }

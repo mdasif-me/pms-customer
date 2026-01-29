@@ -12,14 +12,18 @@ export const columns: ColumnDef<IProjectList>[] = [
   {
     id: 'no',
     header: ({ column }) => (
-      <DataGridColumnHeader title="No" visibility={true} column={column} />
+      <DataGridColumnHeader
+        title="No Of Projects"
+        visibility={true}
+        column={column}
+      />
     ),
     cell: ({ row, table }) =>
       (table
         .getSortedRowModel()
         ?.flatRows?.findIndex((flatRow) => flatRow.id === row.id) || 0) + 1,
     enableSorting: false,
-    size: 20,
+    size: 100,
     enableResizing: false,
   },
   {
@@ -27,7 +31,7 @@ export const columns: ColumnDef<IProjectList>[] = [
     id: 'title',
     header: ({ column }) => (
       <DataGridColumnHeader
-        title="Project Name"
+        title="Project Profile"
         visibility={true}
         column={column}
       />
@@ -102,7 +106,7 @@ export const columns: ColumnDef<IProjectList>[] = [
     id: 'total_paid',
     header: ({ column }) => (
       <DataGridColumnHeader
-        title="Amount Paid"
+        title="Total Paid"
         visibility={true}
         column={column}
       />
@@ -124,27 +128,9 @@ export const columns: ColumnDef<IProjectList>[] = [
     enableResizing: true,
   },
   {
-    accessorKey: 'sell_by',
-    id: 'sell_by',
-    header: ({ column }) => (
-      <DataGridColumnHeader title="Sold By" visibility={true} column={column} />
-    ),
-    cell: ({ row }) => {
-      return (
-        <div className="font-medium text-foreground">
-          {row.original.sell_by}
-        </div>
-      )
-    },
-    size: 150,
-    enableSorting: false,
-    enableHiding: true,
-    enableResizing: true,
-  },
-  {
     id: 'actions',
     header: ({ column }) => (
-      <DataGridColumnHeader title="Actions" visibility={true} column={column} />
+      <DataGridColumnHeader title="Action" visibility={true} column={column} />
     ),
     cell: ({ row }) => <ActionsCell row={row} />,
     size: 60,
