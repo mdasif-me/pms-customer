@@ -8,15 +8,24 @@ import {
 import { DataGrid } from '@/components/ui/data-grid'
 import { DataGridTable } from '@/components/ui/data-grid-table'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Tabs, TabsList, TabsPanel, TabsTab } from '@/components/ui/tabs'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { Link } from '@tanstack/react-router'
 import {
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
   type PaginationState,
+  type SortingState,
   useReactTable,
 } from '@tanstack/react-table'
 import { ChevronLeftIcon } from 'lucide-react'
@@ -29,20 +38,42 @@ export default function ProjectInvestmentList({
 }: {
   projectId: string
 }) {
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  })
+  const [bookingsPagination, setBookingsPagination] = useState<PaginationState>(
+    {
+      pageIndex: 0,
+      pageSize: 10,
+    },
+  )
+  const [installmentsPagination, setInstallmentsPagination] =
+    useState<PaginationState>({
+      pageIndex: 0,
+      pageSize: 10,
+    })
+  const [statusFilter, setStatusFilter] = useState<string>('all')
+  const [sorting, setSorting] = useState<SortingState>([])
 
   const { data: investmentData, isLoading } = useProjectInvestments(projectId)
 
   const bookingsData = useMemo(() => {
-    return investmentData?.edge?.data?.bookings || []
-  }, [investmentData])
+    const bookings = investmentData?.edge?.data?.bookings || []
+    if (statusFilter === 'all') return bookings
+    return bookings.filter(
+      (item) => item.status?.toLowerCase() === statusFilter.toLowerCase(),
+    )
+  }, [investmentData, statusFilter])
 
   const installmentsData = useMemo(() => {
-    return investmentData?.edge?.data?.installments || []
-  }, [investmentData])
+    const installments = investmentData?.edge?.data?.installments || []
+    if (statusFilter === 'all') return installments
+    return installments.filter(
+      (item) => item.status?.toLowerCase() === statusFilter.toLowerCase(),
+    )
+  }, [investmentData, statusFilter])
+
+  useEffect(() => {
+    setBookingsPagination({ pageIndex: 0, pageSize: 10 })
+    setInstallmentsPagination({ pageIndex: 0, pageSize: 10 })
+  }, [statusFilter])
 
   const [columnOrder, setColumnOrder] = useState<string[]>(
     investmentColumns.map((column: any) => column.id as string),
@@ -51,33 +82,39 @@ export default function ProjectInvestmentList({
   const bookingsTable = useReactTable({
     columns: investmentColumns,
     data: bookingsData,
-    getRowId: (row: IInvestmentItem) => row.booking_id,
+    getRowId: (row: IInvestmentItem) => `booking-${row.booking_id}`,
     state: {
-      pagination,
+      pagination: bookingsPagination,
+      sorting,
       columnOrder,
     },
     columnResizeMode: 'onChange',
     onColumnOrderChange: setColumnOrder,
-    onPaginationChange: setPagination,
+    onPaginationChange: setBookingsPagination,
+    onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
   })
 
   const installmentsTable = useReactTable({
     columns: investmentColumns,
     data: installmentsData,
-    getRowId: (row: IInvestmentItem) => row.booking_id,
+    getRowId: (row: IInvestmentItem) => `installment-${row.booking_id}`,
     state: {
-      pagination,
+      pagination: installmentsPagination,
+      sorting,
       columnOrder,
     },
     columnResizeMode: 'onChange',
     onColumnOrderChange: setColumnOrder,
-    onPaginationChange: setPagination,
+    onPaginationChange: setInstallmentsPagination,
+    onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
   })
 
   return (
@@ -116,6 +153,7 @@ export default function ProjectInvestmentList({
 
         <TabsPanel value="bookings">
           <DataGrid
+            key={`bookings-${statusFilter}`}
             table={bookingsTable}
             recordCount={bookingsData.length}
             tableLayout={{
@@ -133,7 +171,24 @@ export default function ProjectInvestmentList({
                     Bookings
                   </h1>
                 </CardToolbar>
-                <CardHeading></CardHeading>
+                <CardHeading>
+                  <div className="flex items-center gap-2.5">
+                    <Select
+                      value={statusFilter}
+                      onValueChange={setStatusFilter}
+                    >
+                      <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="Filter by status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Status</SelectItem>
+                        <SelectItem value="approved">Approved</SelectItem>
+                        <SelectItem value="pending">Pending</SelectItem>
+                        <SelectItem value="rejected">Rejected</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </CardHeading>
               </CardHeader>
               <CardTable>
                 <ScrollArea>
@@ -147,6 +202,7 @@ export default function ProjectInvestmentList({
 
         <TabsPanel value="installments">
           <DataGrid
+            key={`installments-${statusFilter}`}
             table={installmentsTable}
             recordCount={installmentsData.length}
             tableLayout={{
@@ -164,7 +220,24 @@ export default function ProjectInvestmentList({
                     Installments
                   </h1>
                 </CardToolbar>
-                <CardHeading></CardHeading>
+                <CardHeading>
+                  <div className="flex items-center gap-2.5">
+                    <Select
+                      value={statusFilter}
+                      onValueChange={setStatusFilter}
+                    >
+                      <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="Filter by status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Status</SelectItem>
+                        <SelectItem value="approved">Approved</SelectItem>
+                        <SelectItem value="pending">Pending</SelectItem>
+                        <SelectItem value="rejected">Rejected</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </CardHeading>
               </CardHeader>
               <CardTable>
                 <ScrollArea>

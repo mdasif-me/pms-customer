@@ -129,8 +129,11 @@ export const investmentColumns: ColumnDef<IInvestmentItem, any>[] = [
       } as const
 
       return (
-        <Badge variant={statusColors[row.original.status]}>
-          {row.original.status}
+        <Badge
+          variant={statusColors[row.original.status]}
+          className="text-white"
+        >
+          {row.original.status?.toUpperCase() || 'N/A'}
         </Badge>
       )
     },
