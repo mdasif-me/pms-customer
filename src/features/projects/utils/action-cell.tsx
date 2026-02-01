@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router'
 import type { Row } from '@tanstack/react-table'
 import type { IProjectList } from '../interface'
 
-type NavigationType = 'investment' | 'withdrawal'
+type NavigationType = 'investment' | 'withdrawal' | 'refund'
 
 interface ActionsCellProps {
   row: Row<IProjectList>
@@ -14,15 +14,19 @@ export function ActionsCell({
   navigationType = 'investment',
 }: ActionsCellProps) {
   const route =
-    navigationType === 'withdrawal' ? '/withdrawals/$pid' : '/projects/$id'
+    navigationType === 'withdrawal'
+      ? '/withdrawals/$pid'
+      : navigationType === 'refund'
+        ? '/refunds/$pid'
+        : '/projects/$id'
 
   const params =
-    navigationType === 'withdrawal'
+    navigationType === 'withdrawal' || navigationType === 'refund'
       ? { pid: row.original.id }
       : { id: row.original.id }
 
   const search =
-    navigationType === 'withdrawal'
+    navigationType === 'withdrawal' || navigationType === 'refund'
       ? { bid: row.original.booking_id }
       : undefined
 

@@ -27,8 +27,8 @@ const options = linkOptions([
     exact: false,
   },
   {
-    to: '/refund',
-    label: 'Refund',
+    to: '/refunds',
+    label: 'Refunds',
     icon: Refund,
     solidicon: RefundSolid,
     exact: false,

@@ -8,7 +8,7 @@ import { type ColumnDef } from '@tanstack/react-table'
 import type { IProjectList } from '../interface'
 import { ActionsCell } from '../utils/action-cell'
 
-type NavigationType = 'investment' | 'withdrawal'
+type NavigationType = 'investment' | 'withdrawal' | 'refund'
 
 export const createColumns = (
   navigationType: NavigationType = 'investment',

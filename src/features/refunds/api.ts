@@ -1,0 +1,19 @@
+import { apiClient } from '@/lib/api-client'
+import type { IRefundParams, IRefundResponse } from './interface'
+
+const buildQueryString = (params: IRefundParams) => {
+  return Object.entries(params)
+    .filter(([_, value]) => value !== undefined && value !== '')
+    .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+    .join('&')
+}
+
+export const refundApi = {
+  listRefunds: async (params: IRefundParams): Promise<IRefundResponse> => {
+    const queryString = buildQueryString(params)
+    const response = await apiClient.get<IRefundResponse>(
+      `/r/refund?${queryString}`,
+    )
+    return response
+  },
+}

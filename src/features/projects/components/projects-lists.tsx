@@ -27,7 +27,7 @@ import { useProjects } from '../hooks'
 import type { IProjectList } from '../interface'
 import { createColumns } from '../utils/columns'
 
-type NavigationType = 'investment' | 'withdrawal'
+type NavigationType = 'investment' | 'withdrawal' | 'refund'
 
 interface ProjectsListsProps {
   navigationType?: NavigationType
