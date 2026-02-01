@@ -1,9 +1,17 @@
-import { Card, CardHeader, CardTable, CardToolbar } from '@/components/ui/card'
+import {
+  Card,
+  CardFooter,
+  CardHeader,
+  CardTable,
+  CardToolbar,
+} from '@/components/ui/card'
 import { DataGrid } from '@/components/ui/data-grid'
+import { DataGridPagination } from '@/components/ui/data-grid-pagination'
 import { DataGridTable } from '@/components/ui/data-grid-table'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { useMemo, useState } from 'react'
 
+import { Link } from '@tanstack/react-router'
 import {
   getCoreRowModel,
   getFilteredRowModel,
@@ -13,11 +21,19 @@ import {
   type SortingState,
   useReactTable,
 } from '@tanstack/react-table'
+import { ChevronLeftIcon } from 'lucide-react'
 import { useWithdrawals } from '../hooks'
 import type { IWithdrawalItem } from '../interface'
 import { withdrawalColumns } from '../utils/columns'
+import WithdrawalRequest from './withdrawal-request'
 
-export default function WithdrawalsList({ projectId }: { projectId: string }) {
+export default function WithdrawalsList({
+  projectId,
+  bookingId,
+}: {
+  projectId: string
+  bookingId?: string
+}) {
   const [pendingPagination, setPendingPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
@@ -50,14 +66,18 @@ export default function WithdrawalsList({ projectId }: { projectId: string }) {
   }, [approvedData])
 
   const availableBalance = useMemo(() => {
-    const totalApproved = approvedWithdrawals.reduce(
-      (sum, item) => sum + item.total_withdrawal,
-      0,
-    )
-    return totalApproved
-  }, [approvedWithdrawals])
+    const totalPaid = pendingWithdrawals[0]?.total_paid || 0
+    const totalWithdrawal =
+      pendingWithdrawals.reduce((sum, item) => sum + item.total_withdrawal, 0) +
+      approvedWithdrawals.reduce((sum, item) => sum + item.total_withdrawal, 0)
+    return totalPaid - totalWithdrawal
+  }, [pendingWithdrawals, approvedWithdrawals])
 
-  const [columnOrder, setColumnOrder] = useState<string[]>(
+  const [pendingColumnOrder, setPendingColumnOrder] = useState<string[]>(
+    withdrawalColumns.map((column: any) => column.id as string),
+  )
+
+  const [approvedColumnOrder, setApprovedColumnOrder] = useState<string[]>(
     withdrawalColumns.map((column: any) => column.id as string),
   )
 
@@ -68,10 +88,10 @@ export default function WithdrawalsList({ projectId }: { projectId: string }) {
     state: {
       pagination: pendingPagination,
       sorting: pendingSorting,
-      columnOrder,
+      columnOrder: pendingColumnOrder,
     },
     columnResizeMode: 'onChange',
-    onColumnOrderChange: setColumnOrder,
+    onColumnOrderChange: setPendingColumnOrder,
     onPaginationChange: setPendingPagination,
     onSortingChange: setPendingSorting,
     getCoreRowModel: getCoreRowModel(),
@@ -87,10 +107,10 @@ export default function WithdrawalsList({ projectId }: { projectId: string }) {
     state: {
       pagination: approvedPagination,
       sorting: approvedSorting,
-      columnOrder,
+      columnOrder: approvedColumnOrder,
     },
     columnResizeMode: 'onChange',
-    onColumnOrderChange: setColumnOrder,
+    onColumnOrderChange: setApprovedColumnOrder,
     onPaginationChange: setApprovedPagination,
     onSortingChange: setApprovedSorting,
     getCoreRowModel: getCoreRowModel(),
@@ -101,19 +121,39 @@ export default function WithdrawalsList({ projectId }: { projectId: string }) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-foreground">Withdrawals</h1>
-        <div className="text-lg font-semibold text-foreground">
-          Available Balance:{' '}
-          <span className="text-primary">
-            ৳
-            {availableBalance?.toLocaleString('en-IN', {
-              minimumFractionDigits: 0,
-            })}
-            Tk
-          </span>
+      <header className="flex items-center justify-between w-full">
+        <div className="flex items-center md:gap-4 gap-2">
+          <Link
+            to={'/withdrawals'}
+            className="bg-muted/50 flex items-center justify-center rounded-full md:size-12 shadow border shrink-0 size-8"
+          >
+            <ChevronLeftIcon
+              className="text-foreground md:size-8 size-6"
+              size={32}
+            />
+          </Link>
+          <article>
+            <h1 className="md:text-2xl font-semibold md:leading-8">
+              Withdrawals
+            </h1>
+            <p className="text-muted-foreground md:text-sm text-xs">
+              View pending and approved withdrawal requests
+            </p>
+          </article>
         </div>
-      </div>
+        <div className="flex items-center gap-4">
+          <div className="text-lg font-semibold text-foreground">
+            Available Balance:{' '}
+            <span className="text-primary text-2xl font-bold">
+              ৳
+              {availableBalance?.toLocaleString('en-IN', {
+                minimumFractionDigits: 0,
+              })}
+            </span>
+          </div>
+          <WithdrawalRequest projectId={projectId} bookingId={bookingId} />
+        </div>
+      </header>
 
       <DataGrid
         table={pendingTable}
@@ -140,6 +180,9 @@ export default function WithdrawalsList({ projectId }: { projectId: string }) {
               <ScrollBar orientation="horizontal" />
             </ScrollArea>
           </CardTable>
+          <CardFooter>
+            <DataGridPagination />
+          </CardFooter>
         </Card>
       </DataGrid>
 
@@ -168,6 +211,9 @@ export default function WithdrawalsList({ projectId }: { projectId: string }) {
               <ScrollBar orientation="horizontal" />
             </ScrollArea>
           </CardTable>
+          <CardFooter>
+            <DataGridPagination />
+          </CardFooter>
         </Card>
       </DataGrid>
     </div>

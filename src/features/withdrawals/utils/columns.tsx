@@ -12,25 +12,25 @@ export const withdrawalColumns: ColumnDef<IWithdrawalItem, any>[] = [
   {
     id: 'no',
     header: ({ column }) => (
-      <DataGridColumnHeader title="No" visibility={true} column={column} />
+      <DataGridColumnHeader
+        title="No Of Request"
+        visibility={true}
+        column={column}
+      />
     ),
     cell: ({ row, table }) =>
       (table
         .getSortedRowModel()
         ?.flatRows?.findIndex((flatRow) => flatRow.id === row.id) || 0) + 1,
     enableSorting: false,
-    size: 60,
+    size: 120,
     enableResizing: false,
   },
   {
     accessorKey: 'full_name',
     id: 'full_name',
     header: ({ column }) => (
-      <DataGridColumnHeader
-        title="Customer Name"
-        visibility={true}
-        column={column}
-      />
+      <DataGridColumnHeader title="Profile" visibility={true} column={column} />
     ),
     cell: ({ row }) => {
       return (
@@ -57,16 +57,46 @@ export const withdrawalColumns: ColumnDef<IWithdrawalItem, any>[] = [
     accessorKey: 'allotment_name',
     id: 'allotment_name',
     header: ({ column }) => (
-      <DataGridColumnHeader title="Package" visibility={true} column={column} />
+      <DataGridColumnHeader
+        title="Allotment Name"
+        visibility={true}
+        column={column}
+      />
     ),
     cell: ({ row }) => {
       return (
         <div className="font-medium text-foreground">
-          {row.original.allotment_name}
+          {row.original.allotment_name || 'N/A'}
         </div>
       )
     },
-    size: 150,
+    size: 180,
+    enableSorting: false,
+    enableHiding: true,
+    enableResizing: true,
+  },
+  {
+    accessorKey: 'total_withdrawal',
+    id: 'total_withdrawal',
+    header: ({ column }) => (
+      <DataGridColumnHeader
+        title="Withdraw Amount"
+        visibility={true}
+        column={column}
+      />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="font-medium text-foreground">
+          {row.original.total_withdrawal?.toLocaleString('en-IN', {
+            style: 'currency',
+            currency: 'BDT',
+            minimumFractionDigits: 0,
+          }) || 'N/A'}
+        </div>
+      )
+    },
+    size: 180,
     enableSorting: false,
     enableHiding: true,
     enableResizing: true,
@@ -92,33 +122,7 @@ export const withdrawalColumns: ColumnDef<IWithdrawalItem, any>[] = [
         </div>
       )
     },
-    size: 150,
-    enableSorting: false,
-    enableHiding: true,
-    enableResizing: true,
-  },
-  {
-    accessorKey: 'total_withdrawal',
-    id: 'total_withdrawal',
-    header: ({ column }) => (
-      <DataGridColumnHeader
-        title="Withdrawal Amount"
-        visibility={true}
-        column={column}
-      />
-    ),
-    cell: ({ row }) => {
-      return (
-        <div className="font-medium text-foreground">
-          {row.original.total_withdrawal?.toLocaleString('en-IN', {
-            style: 'currency',
-            currency: 'BDT',
-            minimumFractionDigits: 0,
-          }) || 'N/A'}
-        </div>
-      )
-    },
-    size: 150,
+    size: 180,
     enableSorting: false,
     enableHiding: true,
     enableResizing: true,

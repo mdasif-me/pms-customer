@@ -1,5 +1,10 @@
 import { apiClient } from '@/lib/api-client'
-import type { IWithdrawalParams, IWithdrawalResponse } from './interface'
+import type {
+  IWithdrawalCreateResponse,
+  IWithdrawalParams,
+  IWithdrawalRequest,
+  IWithdrawalResponse,
+} from './interface'
 
 const buildQueryString = (params: IWithdrawalParams): string => {
   const queryParams = new URLSearchParams()
@@ -14,5 +19,10 @@ export const withdrawalApi = {
   ): Promise<IWithdrawalResponse> => {
     const queryString = buildQueryString(params)
     return apiClient.get<IWithdrawalResponse>(`/r/withdraw?${queryString}`)
+  },
+  createWithdrawal: (
+    data: IWithdrawalRequest,
+  ): Promise<IWithdrawalCreateResponse> => {
+    return apiClient.post('/r/withdraw', data)
   },
 }

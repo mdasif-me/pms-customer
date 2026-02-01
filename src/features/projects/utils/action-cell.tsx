@@ -21,10 +21,16 @@ export function ActionsCell({
       ? { pid: row.original.id }
       : { id: row.original.id }
 
+  const search =
+    navigationType === 'withdrawal'
+      ? { bid: row.original.booking_id }
+      : undefined
+
   return (
     <Link
       to={route}
       params={params}
+      search={search}
       className="gradient-btn text-white rounded-2xl!"
     >
       View
