@@ -26,8 +26,15 @@ import { useMemo, useState } from 'react'
 import { useRefunds } from '../hooks'
 import type { IRefundItem } from '../interface'
 import { columns } from '../utils/columns'
+import RefundAction from './refund-action'
 
-export default function RefundsList({ projectId }: { projectId: string }) {
+export default function RefundsList({
+  projectId,
+  bookingId,
+}: {
+  projectId: string
+  bookingId?: string
+}) {
   const [pendingPagination, setPendingPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
@@ -124,6 +131,11 @@ export default function RefundsList({ projectId }: { projectId: string }) {
             </p>
           </article>
         </div>
+        {bookingId && (
+          <div className="flex items-center gap-4">
+            <RefundAction projectId={projectId} bookingId={bookingId} />
+          </div>
+        )}
       </header>
 
       <DataGrid

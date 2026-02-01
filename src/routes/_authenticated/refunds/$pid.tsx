@@ -13,10 +13,11 @@ export const Route = createFileRoute('/_authenticated/refunds/$pid')({
 
 function RouteComponent() {
   const { pid } = Route.useParams()
+  const { bid } = Route.useSearch()
 
   return (
     <div>
-      <RefundsList projectId={pid} />
+      <RefundsList projectId={pid} bookingId={bid} />
     </div>
   )
 }

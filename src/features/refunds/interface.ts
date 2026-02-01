@@ -23,3 +23,13 @@ export interface IRefundParams {
   project_id: string
   status?: 'pending' | 'approved' | 'rejected' | 'all'
 }
+
+export interface IRefundRequest {
+  project_id: string
+  booking_id: string
+}
+
+export interface IRefundCreateResponse {
+  status_code: number
+  message: string
+}

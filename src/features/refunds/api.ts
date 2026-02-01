@@ -1,5 +1,10 @@
 import { apiClient } from '@/lib/api-client'
-import type { IRefundParams, IRefundResponse } from './interface'
+import type {
+  IRefundCreateResponse,
+  IRefundParams,
+  IRefundRequest,
+  IRefundResponse,
+} from './interface'
 
 const buildQueryString = (params: IRefundParams) => {
   return Object.entries(params)
@@ -13,6 +18,16 @@ export const refundApi = {
     const queryString = buildQueryString(params)
     const response = await apiClient.get<IRefundResponse>(
       `/r/refund?${queryString}`,
+    )
+    return response
+  },
+
+  createRefund: async (
+    data: IRefundRequest,
+  ): Promise<IRefundCreateResponse> => {
+    const response = await apiClient.post<IRefundCreateResponse>(
+      '/r/refund',
+      data,
     )
     return response
   },
