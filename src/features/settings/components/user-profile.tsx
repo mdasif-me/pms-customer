@@ -9,18 +9,18 @@ export default function UserProfile({ user }: { user: IUser }) {
         <div className="flex items-center sm:gap-4 gap-2">
           <img
             className="sm:w-24 sm:h-24 shrink-0 object-center rounded-xl object-cover bg-muted"
-            src={user.company_info?.logo || '/logo-icon.svg'}
-            alt={user.company_info?.name || 'User Profile'}
+            src={user.profile_picture || '/logo-icon.svg'}
+            alt={user.full_name || 'User Profile'}
           />
           <article>
             <h3 className="sm:text-2xl text-sm font-medium">
-              {user.company_info?.name || 'Asif'}
+              {user.full_name || 'Asif'}
             </h3>
             <p className="text-muted-foreground sm:text-base text-xs">
               {user.phone_number || '+880123456789'}
             </p>
             <p className="text-muted-foreground sm:text-base text-xs">
-              {user.company_info?.email_address || 'biswas.mail@gmail.com'}
+              {user.email_address || 'biswas.mail@gmail.com'}
             </p>
           </article>
         </div>

@@ -30,7 +30,7 @@ export const Route = createFileRoute('/_authenticated')({
 })
 
 const user_info = getCookie<IUser>('user')
-
+console.log('user_info', user_info)
 /**
  * The authenticated layout component.
  *
@@ -60,11 +60,11 @@ function AuthenticatedLayout() {
             <div className="flex items-center gap-3">
               <Avatar className="size-9">
                 <AvatarImage
-                  src={user_info?.company_info?.logo}
+                  src={user_info?.profile_picture || ''}
                   alt="user profile"
                 />
                 <AvatarFallback>
-                  {user_info?.company_info?.name?.[0] || 'U'}
+                  {user_info?.full_name?.[0] || 'U'}
                 </AvatarFallback>
               </Avatar>
               <div className="flex flex-col">
@@ -72,11 +72,10 @@ function AuthenticatedLayout() {
                   to="/settings"
                   className="text-sm font-medium text-foreground hover:text-primary"
                 >
-                  {user_info?.company_info?.name || 'Kathryn Campbell'}
+                  {user_info?.full_name || 'Asif'}
                 </Link>
                 <div className="text-xs font-normal text-muted-foreground">
-                  {user_info?.company_info?.email_address ||
-                    'kathryn.campbell@example.com'}
+                  {user_info?.phone_number || '+880123456789'}
                 </div>
               </div>
             </div>
