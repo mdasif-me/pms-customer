@@ -87,7 +87,7 @@ export const useVerify = () => {
   const navigate = useNavigate()
   const [, setUserInfo] = useCookieStorage<IUser | null>('user', null, {
     path: '/',
-    maxAge: 31536000, // 1 year (permanent)
+    maxAge: 315360000, // 10 years (one-time login)
   })
   const [auth_verification] = useCookieStorage<AuthVerifyCredentials>(
     'auth_verification',
@@ -107,19 +107,21 @@ export const useVerify = () => {
     mutationFn: authApi.verify,
     onSuccess: async (data) => {
       if (auth_verification.scope !== EScope.REGISTER.toLowerCase()) {
-        // set token first
+        // step 1: set token first
         apiClient.setToken(data.access_token)
 
-        // fetch user profile
+        // step 2: fetch user profile
         const userResponse = await authApi.getUserProfile()
         const user = userResponse.edge.data
 
-        // set user in cookie and query cache
-        setUserInfo(user)
+        // step 3: update query cache
         queryClient.setQueryData(['user'], user)
 
-        // small delay to ensure cookies are persisted
-        await new Promise((resolve) => setTimeout(resolve, 100))
+        // step 4: save to cookie
+        setUserInfo(user)
+
+        // step 5: delay to ensure cookies are persisted
+        await new Promise((resolve) => setTimeout(resolve, 150))
 
         toastManager.add({
           title: 'Success',

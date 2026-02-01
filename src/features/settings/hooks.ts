@@ -9,6 +9,7 @@ export const useUpdateProfile = () => {
   const queryClient = useQueryClient()
   const [, setUser] = useCookieStorage<IUser | null>('user', null, {
     path: '/',
+    maxAge: 315360000, // 10 years (one-time login)
   })
   return useMutation({
     mutationFn: ({ data }: { data: Partial<TUpdateProfile> }) => {

@@ -15,13 +15,19 @@ class ApiClient {
   }
 
   setToken(token: string) {
-    // permanent cookie - no expiration for one-time login
+    // 10-year cookie for one-time login (effectively permanent)
     // secure; samesite=strict; should be used in production
-    document.cookie = `token=${token}; path=/; max-age=31536000` // 1 year (effectively permanent)
+    document.cookie = `token=${token}; path=/; max-age=315360000` // 10 years
   }
 
   removeToken() {
     document.cookie = 'token=; path=/; max-age=0'
+  }
+
+  private clearAuth() {
+    // clear both token and user cookies
+    this.removeToken()
+    document.cookie = 'user=; path=/; max-age=0'
   }
 
   private async request<T>(
@@ -50,11 +56,27 @@ class ApiClient {
       const response = await fetch(url, config)
 
       if (response.status === 401) {
-        this.removeToken()
-        if (window.location.pathname !== '/auth/login') {
-          window.location.href = '/auth/login'
+        const errorData = await response.json().catch(() => ({}))
+        const errorMessage = errorData.message || ''
+
+        // only clear auth if token is actually invalid/expired
+        if (
+          errorMessage.toLowerCase().includes('token') ||
+          errorMessage.toLowerCase().includes('unauthorized') ||
+          errorMessage.toLowerCase().includes('expired')
+        ) {
+          this.clearAuth()
+
+          // prevent redirect loop
+          if (
+            !window.location.pathname.startsWith('/auth') &&
+            window.location.pathname !== '/auth/login'
+          ) {
+            window.location.href = '/auth/login'
+          }
         }
-        throw new Error('Unauthorized')
+
+        throw new Error(errorMessage || 'Unauthorized')
       }
 
       if (!response.ok) {

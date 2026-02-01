@@ -20,19 +20,36 @@ export const Route = createFileRoute('/_authenticated')({
   beforeLoad: ({ context, location }) => {
     const { auth } = context
 
-    // get fresh user data
-    const user = auth.getUser()
-
-    // check if token exists in cookies
-    const hasToken = document.cookie.match(new RegExp('(^| )token=([^;]+)'))
-
-    // prevent redirect loop - don't redirect if we're already trying to access auth
+    // prevent redirect loop - don't redirect if we're already on auth routes
     if (location.pathname.startsWith('/auth')) {
       return
     }
 
-    // only redirect if BOTH user and token are missing
-    if (!user && !hasToken) {
+    // primary check: token existence (most reliable)
+    const hasToken = document.cookie.match(new RegExp('(^| )token=([^;]+)'))
+
+    if (!hasToken) {
+      // no token = definitely not authenticated
+      throw redirect({
+        to: '/auth/login',
+      })
+    }
+
+    // token exists, now check/restore user data
+    let user = auth.getUser()
+
+    if (!user) {
+      // try to restore user from cookie
+      const userFromCookie = getCookie<IUser>('user')
+      if (userFromCookie) {
+        // restore to query cache
+        context.queryClient.setQueryData(['user'], userFromCookie)
+        user = userFromCookie
+      }
+    }
+
+    // if still no user data after restoration attempt, redirect
+    if (!user) {
       throw redirect({
         to: '/auth/login',
       })
