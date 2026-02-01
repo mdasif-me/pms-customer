@@ -17,20 +17,42 @@ import type { IUser } from '@/features/auth/types'
 import { getCookie } from '@/hooks/use-cookie-storage'
 
 export const Route = createFileRoute('/_authenticated')({
-  beforeLoad: ({ context }) => {
+  beforeLoad: ({ context, location }) => {
     const { auth } = context
+
+    // get fresh user data
     const user = auth.getUser()
-    if (!user) {
+
+    // check if token exists in cookies
+    const hasToken = document.cookie.match(new RegExp('(^| )token=([^;]+)'))
+
+    // prevent redirect loop - don't redirect if we're already trying to access auth
+    if (location.pathname.startsWith('/auth')) {
+      return
+    }
+
+    // only redirect if BOTH user and token are missing
+    if (!user && !hasToken) {
       throw redirect({
         to: '/auth/login',
       })
+    }
+
+    // if we have token but no user, try to restore from cookie
+    if (!user && hasToken) {
+      const userFromCookie = getCookie<IUser>('user')
+      if (!userFromCookie) {
+        // token exists but no user data - redirect to login
+        throw redirect({
+          to: '/auth/login',
+        })
+      }
     }
   },
   component: AuthenticatedLayout,
 })
 
 const user_info = getCookie<IUser>('user')
-console.log('user_info', user_info)
 /**
  * The authenticated layout component.
  *

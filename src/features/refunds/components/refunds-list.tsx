@@ -50,11 +50,13 @@ export default function RefundsList({
 
   const { data: pendingRefunds, isLoading: pendingLoading } = useRefunds({
     project_id: projectId,
+    booking_id: bookingId || '',
     status: 'pending',
   })
 
   const { data: approvedRefunds, isLoading: approvedLoading } = useRefunds({
     project_id: projectId,
+    booking_id: bookingId || '',
     status: 'approved',
   })
 

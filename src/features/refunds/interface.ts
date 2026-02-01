@@ -21,6 +21,7 @@ export interface IRefundResponse {
 
 export interface IRefundParams {
   project_id: string
+  booking_id: string
   status?: 'pending' | 'approved' | 'rejected' | 'all'
 }
 

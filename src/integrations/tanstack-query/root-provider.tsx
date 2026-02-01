@@ -8,6 +8,7 @@ export function getContext() {
     defaultOptions: {
       queries: {
         staleTime: 1000 * 60 * 5, // 5 minutes
+        gcTime: Infinity, // keep cache data indefinitely
       },
     },
   })
@@ -23,7 +24,19 @@ export function getContext() {
 
 export function getAuthHelpers(queryClient: QueryClient) {
   const getUser = (): IUser | null => {
-    return queryClient.getQueryData<IUser>(['user']) ?? null
+    // first check query cache
+    let user = queryClient.getQueryData<IUser>(['user'])
+
+    // if not in cache, check cookie and restore to cache
+    if (!user) {
+      const userFromCookie = getCookie<IUser>('user')
+      if (userFromCookie) {
+        queryClient.setQueryData(['user'], userFromCookie)
+        user = userFromCookie
+      }
+    }
+
+    return user ?? null
   }
 
   const hasRole = (roles: ERole[]): boolean => {

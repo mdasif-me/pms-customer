@@ -17,7 +17,7 @@ export const refundApi = {
   listRefunds: async (params: IRefundParams): Promise<IRefundResponse> => {
     const queryString = buildQueryString(params)
     const response = await apiClient.get<IRefundResponse>(
-      `/r/refund?${queryString}`,
+      `/r/refund/booking?${queryString}`,
     )
     return response
   },

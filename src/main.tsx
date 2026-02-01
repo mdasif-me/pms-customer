@@ -7,8 +7,15 @@ import { getAuthHelpers } from './integrations/tanstack-query/root-provider.tsx'
 
 import { routeTree } from './routeTree.gen'
 
+import { apiClient } from './lib/api-client.ts'
 import reportWebVitals from './reportWebVitals.ts'
 import './styles.css'
+
+// restore token from cookie on app init
+const tokenMatch = document.cookie.match(new RegExp('(^| )token=([^;]+)'))
+if (tokenMatch) {
+  apiClient.setToken(tokenMatch[2])
+}
 
 const TanStackQueryProviderContext = TanStackQueryProvider.getContext()
 const authHelpers = getAuthHelpers(TanStackQueryProviderContext.queryClient)

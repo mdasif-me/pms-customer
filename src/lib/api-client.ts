@@ -15,8 +15,9 @@ class ApiClient {
   }
 
   setToken(token: string) {
+    // permanent cookie - no expiration for one-time login
     // secure; samesite=strict; should be used in production
-    document.cookie = `token=${token}; path=/; max-age=86400` // 1 day
+    document.cookie = `token=${token}; path=/; max-age=31536000` // 1 year (effectively permanent)
   }
 
   removeToken() {

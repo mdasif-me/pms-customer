@@ -84,8 +84,10 @@ export const useSignup = () => {
  * toast if the verification fails.
  */
 export const useVerify = () => {
+  const navigate = useNavigate()
   const [, setUserInfo] = useCookieStorage<IUser | null>('user', null, {
     path: '/',
+    maxAge: 31536000, // 1 year (permanent)
   })
   const [auth_verification] = useCookieStorage<AuthVerifyCredentials>(
     'auth_verification',
@@ -105,20 +107,30 @@ export const useVerify = () => {
     mutationFn: authApi.verify,
     onSuccess: async (data) => {
       if (auth_verification.scope !== EScope.REGISTER.toLowerCase()) {
+        // set token first
         apiClient.setToken(data.access_token)
+
+        // fetch user profile
         const userResponse = await authApi.getUserProfile()
         const user = userResponse.edge.data
 
+        // set user in cookie and query cache
         setUserInfo(user)
         queryClient.setQueryData(['user'], user)
+
+        // small delay to ensure cookies are persisted
+        await new Promise((resolve) => setTimeout(resolve, 100))
+
         toastManager.add({
           title: 'Success',
           description: data.message,
           type: 'success',
         })
-        window.location.href = '/'
+
+        // use router navigation instead of hard reload
+        navigate({ to: '/' })
       } else {
-        window.location.href = '/auth/login'
+        navigate({ to: '/auth/login' })
       }
     },
     onError: (error) => {
