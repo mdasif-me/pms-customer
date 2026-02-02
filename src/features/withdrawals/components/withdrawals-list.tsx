@@ -49,11 +49,13 @@ export default function WithdrawalsList({
 
   const { data: pendingData, isLoading: pendingLoading } = useWithdrawals({
     project_id: projectId,
+    booking_id: bookingId || '',
     status: 'pending',
   })
 
   const { data: approvedData, isLoading: approvedLoading } = useWithdrawals({
     project_id: projectId,
+    booking_id: bookingId || '',
     status: 'approved',
   })
 
