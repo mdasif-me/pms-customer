@@ -67,13 +67,13 @@ export default function WithdrawalsList({
     return approvedData?.edges?.flatMap((edge) => edge.data) || []
   }, [approvedData])
 
-  const availableBalance = useMemo(() => {
-    const totalPaid = pendingWithdrawals[0]?.total_paid || 0
-    const totalWithdrawal =
-      pendingWithdrawals.reduce((sum, item) => sum + item.total_withdrawal, 0) +
-      approvedWithdrawals.reduce((sum, item) => sum + item.total_withdrawal, 0)
-    return totalPaid - totalWithdrawal
-  }, [pendingWithdrawals, approvedWithdrawals])
+  // const availableBalance = useMemo(() => {
+  //   const totalPaid = pendingWithdrawals[0]?.total_paid || 0
+  //   const totalWithdrawal =
+  //     pendingWithdrawals.reduce((sum, item) => sum + item.total_withdrawal, 0) +
+  //     approvedWithdrawals.reduce((sum, item) => sum + item.total_withdrawal, 0)
+  //   return totalPaid - totalWithdrawal
+  // }, [pendingWithdrawals, approvedWithdrawals])
 
   const [pendingColumnOrder, setPendingColumnOrder] = useState<string[]>(
     withdrawalColumns.map((column: any) => column.id as string),
@@ -144,7 +144,7 @@ export default function WithdrawalsList({
           </article>
         </div>
         <div className="flex items-center gap-4">
-          <div className="text-lg font-semibold text-foreground">
+          {/* <div className="text-lg font-semibold text-foreground">
             Available Balance:{' '}
             <span className="text-primary text-2xl font-bold">
               ৳
@@ -152,7 +152,7 @@ export default function WithdrawalsList({
                 minimumFractionDigits: 0,
               })}
             </span>
-          </div>
+          </div> */}
           <WithdrawalRequest projectId={projectId} bookingId={bookingId} />
         </div>
       </header>
