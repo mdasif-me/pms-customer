@@ -8,6 +8,7 @@ export enum ERole {
   USER = 'user',
   MANAGER = 'manager',
   COMPANY = 'company',
+  CUSTOMER = 'customer',
 }
 export type TVerificationStatus = 'pending' | 'verified' | 'rejected'
 

@@ -114,13 +114,31 @@ export const useVerify = () => {
         const userResponse = await authApi.getUserProfile()
         const user = userResponse.edge.data
 
-        // step 3: update query cache
+        // step 3: check if user role is customer
+        if (user.role?.toLowerCase() !== ERole.CUSTOMER.toLowerCase()) {
+          // clear all cookies and don't allow login
+          apiClient.removeToken()
+          setUserInfo(null)
+          queryClient.setQueryData(['user'], null)
+
+          toastManager.add({
+            title: 'Access Denied',
+            description:
+              'Only customers are allowed to access this application.',
+            type: 'error',
+          })
+
+          navigate({ to: '/auth/login' })
+          return
+        }
+
+        // step 4: update query cache
         queryClient.setQueryData(['user'], user)
 
-        // step 4: save to cookie
+        // step 5: save to cookie
         setUserInfo(user)
 
-        // step 5: delay to ensure cookies are persisted
+        // step 6: delay to ensure cookies are persisted
         await new Promise((resolve) => setTimeout(resolve, 150))
 
         toastManager.add({
