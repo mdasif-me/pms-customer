@@ -121,7 +121,7 @@ export default function ProjectInvestmentList({
   const installmentsTable = useReactTable({
     columns: investmentColumns,
     data: installmentsData,
-    getRowId: (row: IInvestmentItem) => `installment-${row.booking_id}`,
+    getRowId: (row, index) => `installment-${row.booking_id}-${index}`,
     state: {
       pagination: installmentsPagination,
       sorting,

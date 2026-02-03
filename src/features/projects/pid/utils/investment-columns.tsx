@@ -15,11 +15,9 @@ export const investmentColumns: ColumnDef<IInvestmentItem, any>[] = [
       <DataGridColumnHeader title="No" visibility={true} column={column} />
     ),
     cell: ({ row, table }) => {
-      const index =
-        table
-          .getSortedRowModel()
-          ?.flatRows?.findIndex((flatRow) => flatRow.id === row.id) ?? -1
-      return index >= 0 ? index + 1 : 'N/A'
+      const pageIndex = table.getState().pagination.pageIndex
+      const pageSize = table.getState().pagination.pageSize
+      return pageIndex * pageSize + row.index + 1
     },
     enableSorting: false,
     size: 60,
