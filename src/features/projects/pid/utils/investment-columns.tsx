@@ -30,7 +30,7 @@ export const investmentColumns: ColumnDef<IInvestmentItem, any>[] = [
     id: 'full_name',
     header: ({ column }) => (
       <DataGridColumnHeader
-        title="Agent Profile"
+        title="Customer Profile"
         visibility={true}
         column={column}
       />
