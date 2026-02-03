@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as R403RouteImport } from './routes/403'
+import { Route as QrCheckIndexRouteImport } from './routes/qr-check/index'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthVerifyIndexRouteImport } from './routes/auth/verify/index'
 import { Route as AuthSignupIndexRouteImport } from './routes/auth/signup/index'
@@ -35,6 +36,11 @@ const AuthenticatedRoute = AuthenticatedRouteImport.update({
 const R403Route = R403RouteImport.update({
   id: '/403',
   path: '/403',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QrCheckIndexRoute = QrCheckIndexRouteImport.update({
+  id: '/qr-check/',
+  path: '/qr-check/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
@@ -96,6 +102,7 @@ export interface FileRoutesByFullPath {
   '/403': typeof R403Route
   '/auth': typeof AuthRouteWithChildren
   '/': typeof AuthenticatedIndexRoute
+  '/qr-check': typeof QrCheckIndexRoute
   '/projects/$id': typeof AuthenticatedProjectsIdRoute
   '/refunds/$pid': typeof AuthenticatedRefundsPidRoute
   '/withdrawals/$pid': typeof AuthenticatedWithdrawalsPidRoute
@@ -110,6 +117,7 @@ export interface FileRoutesByTo {
   '/403': typeof R403Route
   '/auth': typeof AuthRouteWithChildren
   '/': typeof AuthenticatedIndexRoute
+  '/qr-check': typeof QrCheckIndexRoute
   '/projects/$id': typeof AuthenticatedProjectsIdRoute
   '/refunds/$pid': typeof AuthenticatedRefundsPidRoute
   '/withdrawals/$pid': typeof AuthenticatedWithdrawalsPidRoute
@@ -126,6 +134,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/qr-check/': typeof QrCheckIndexRoute
   '/_authenticated/projects/$id': typeof AuthenticatedProjectsIdRoute
   '/_authenticated/refunds/$pid': typeof AuthenticatedRefundsPidRoute
   '/_authenticated/withdrawals/$pid': typeof AuthenticatedWithdrawalsPidRoute
@@ -142,6 +151,7 @@ export interface FileRouteTypes {
     | '/403'
     | '/auth'
     | '/'
+    | '/qr-check'
     | '/projects/$id'
     | '/refunds/$pid'
     | '/withdrawals/$pid'
@@ -156,6 +166,7 @@ export interface FileRouteTypes {
     | '/403'
     | '/auth'
     | '/'
+    | '/qr-check'
     | '/projects/$id'
     | '/refunds/$pid'
     | '/withdrawals/$pid'
@@ -171,6 +182,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/'
+    | '/qr-check/'
     | '/_authenticated/projects/$id'
     | '/_authenticated/refunds/$pid'
     | '/_authenticated/withdrawals/$pid'
@@ -186,6 +198,7 @@ export interface RootRouteChildren {
   R403Route: typeof R403Route
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
+  QrCheckIndexRoute: typeof QrCheckIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -209,6 +222,13 @@ declare module '@tanstack/react-router' {
       path: '/403'
       fullPath: '/403'
       preLoaderRoute: typeof R403RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/qr-check/': {
+      id: '/qr-check/'
+      path: '/qr-check'
+      fullPath: '/qr-check'
+      preLoaderRoute: typeof QrCheckIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/': {
@@ -326,6 +346,7 @@ const rootRouteChildren: RootRouteChildren = {
   R403Route: R403Route,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
+  QrCheckIndexRoute: QrCheckIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

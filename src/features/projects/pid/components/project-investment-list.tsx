@@ -35,8 +35,10 @@ import { investmentColumns } from '../utils/investment-columns'
 
 export default function ProjectInvestmentList({
   projectId,
+  bookingId,
 }: {
   projectId: string
+  bookingId: string
 }) {
   const [bookingsPagination, setBookingsPagination] = useState<PaginationState>(
     {
@@ -52,7 +54,25 @@ export default function ProjectInvestmentList({
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [sorting, setSorting] = useState<SortingState>([])
 
-  const { data: investmentData, isLoading } = useProjectInvestments(projectId)
+  const { data: investmentData, isLoading } = useProjectInvestments(
+    projectId,
+    bookingId,
+  )
+
+  if (!bookingId) {
+    return (
+      <div className="flex h-[50vh] items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-foreground/80 mb-2">
+            booking id required
+          </h2>
+          <p className="text-muted-foreground">
+            please provide a valid booking id to view investment details
+          </p>
+        </div>
+      </div>
+    )
+  }
 
   const bookingsData = useMemo(() => {
     const bookings = investmentData?.edge?.data?.bookings || []

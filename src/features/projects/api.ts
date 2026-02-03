@@ -31,9 +31,10 @@ export const projectApi = {
 
   getProjectInvestments: (
     pid: string,
+    bid: string,
   ): Promise<{ edge: { node: string; data: IProjectInvestmentData } }> => {
     return apiClient.get<{
       edge: { node: string; data: IProjectInvestmentData }
-    }>(`/r/p/${pid}`)
+    }>(`/r/p/${pid}/b/${bid}`)
   },
 }

@@ -25,10 +25,7 @@ export function ActionsCell({
       ? { pid: row.original.id }
       : { id: row.original.id }
 
-  const search =
-    navigationType === 'withdrawal' || navigationType === 'refund'
-      ? { bid: row.original.booking_id }
-      : undefined
+  const search = { bid: row.original.booking_id }
 
   return (
     <Link

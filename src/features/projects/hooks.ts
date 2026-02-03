@@ -18,10 +18,11 @@ export const useProject = (pid: string) => {
   })
 }
 
-export const useProjectInvestments = (pid: string) => {
+export const useProjectInvestments = (pid: string, bid: string) => {
   return useQuery({
-    queryKey: ['project-investments', pid],
-    queryFn: () => projectApi.getProjectInvestments(pid),
+    queryKey: ['project-investments', pid, bid],
+    queryFn: () => projectApi.getProjectInvestments(pid, bid),
     staleTime: 5 * 60 * 1000,
+    enabled: !!pid && !!bid,
   })
 }
