@@ -45,8 +45,15 @@ export default function RefundsList({
       pageSize: 10,
     },
   )
+  const [rejectedPagination, setRejectedPagination] = useState<PaginationState>(
+    {
+      pageIndex: 0,
+      pageSize: 10,
+    },
+  )
   const [pendingSorting, setPendingSorting] = useState<SortingState>([])
   const [approvedSorting, setApprovedSorting] = useState<SortingState>([])
+  const [rejectedSorting, setRejectedSorting] = useState<SortingState>([])
 
   const { data: pendingRefunds, isLoading: pendingLoading } = useRefunds({
     project_id: projectId,
@@ -60,6 +67,12 @@ export default function RefundsList({
     status: 'approved',
   })
 
+  const { data: rejectedRefunds, isLoading: rejectedLoading } = useRefunds({
+    project_id: projectId,
+    booking_id: bookingId || '',
+    status: 'rejected',
+  })
+
   const pendingData = useMemo(() => {
     return pendingRefunds?.edges?.flatMap((edge) => edge.data) || []
   }, [pendingRefunds])
@@ -68,10 +81,17 @@ export default function RefundsList({
     return approvedRefunds?.edges?.flatMap((edge) => edge.data) || []
   }, [approvedRefunds])
 
+  const rejectedData = useMemo(() => {
+    return rejectedRefunds?.edges?.flatMap((edge) => edge.data) || []
+  }, [rejectedRefunds])
+
   const [pendingColumnOrder, setPendingColumnOrder] = useState<string[]>(
     columns.map((column) => column.id as string),
   )
   const [approvedColumnOrder, setApprovedColumnOrder] = useState<string[]>(
+    columns.map((column) => column.id as string),
+  )
+  const [rejectedColumnOrder, setRejectedColumnOrder] = useState<string[]>(
     columns.map((column) => column.id as string),
   )
 
@@ -107,6 +127,25 @@ export default function RefundsList({
     onColumnOrderChange: setApprovedColumnOrder,
     onPaginationChange: setApprovedPagination,
     onSortingChange: setApprovedSorting,
+    getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+  })
+
+  const rejectedTable = useReactTable({
+    columns,
+    data: rejectedData,
+    getRowId: (row: IRefundItem) => row.id,
+    state: {
+      pagination: rejectedPagination,
+      sorting: rejectedSorting,
+      columnOrder: rejectedColumnOrder,
+    },
+    columnResizeMode: 'onChange',
+    onColumnOrderChange: setRejectedColumnOrder,
+    onPaginationChange: setRejectedPagination,
+    onSortingChange: setRejectedSorting,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -202,6 +241,46 @@ export default function RefundsList({
               <div className="flex w-full items-center justify-between">
                 <p className="text-sm text-muted-foreground">
                   Total Approved: {approvedData.length}
+                </p>
+              </div>
+            </CardHeading>
+          </CardHeader>
+          <CardTable>
+            <ScrollArea>
+              <DataGridTable />
+              <ScrollBar orientation="horizontal" />
+            </ScrollArea>
+          </CardTable>
+          <CardFooter>
+            <DataGridPagination />
+          </CardFooter>
+        </Card>
+      </DataGrid>
+
+      <Separator />
+
+      <DataGrid
+        table={rejectedTable}
+        recordCount={rejectedData.length}
+        tableLayout={{
+          columnsPinnable: true,
+          columnsResizable: true,
+          columnsMovable: true,
+          columnsVisibility: true,
+        }}
+        isLoading={rejectedLoading}
+      >
+        <Card>
+          <CardHeader className="py-4">
+            <CardToolbar>
+              <h2 className="text-xl text-foreground/80 font-semibold tracking-tight">
+                Rejected Refunds
+              </h2>
+            </CardToolbar>
+            <CardHeading>
+              <div className="flex w-full items-center justify-between">
+                <p className="text-sm text-muted-foreground">
+                  Total Rejected: {rejectedData.length}
                 </p>
               </div>
             </CardHeading>
