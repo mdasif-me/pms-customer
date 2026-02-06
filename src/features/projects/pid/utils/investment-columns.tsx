@@ -14,12 +14,8 @@ export const investmentColumns: ColumnDef<IInvestmentItem, any>[] = [
     header: ({ column }) => (
       <DataGridColumnHeader title="No" visibility={true} column={column} />
     ),
-    cell: ({ row, table }) => {
-      const pageIndex = table.getState().pagination.pageIndex
-      const pageSize = table.getState().pagination.pageSize
-      const paginatedRows = table.getPaginationRowModel().rows
-      const rowIndexInPage = paginatedRows.findIndex((r) => r.id === row.id)
-      return pageIndex * pageSize + rowIndexInPage + 1
+    cell: ({ row }) => {
+      return row.index + 1
     },
     enableSorting: false,
     size: 60,

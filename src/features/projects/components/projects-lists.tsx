@@ -73,7 +73,7 @@ export default function ProjectsLists({
     columns,
     data: filteredData,
     pageCount: totalPages,
-    getRowId: (row: IProjectList) => row.id,
+    getRowId: (row: IProjectList, index) => row.id + '-' + index,
     state: {
       pagination,
       columnOrder,

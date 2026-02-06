@@ -98,7 +98,7 @@ export default function RefundsList({
   const pendingTable = useReactTable({
     columns,
     data: pendingData,
-    getRowId: (row: IRefundItem) => row.id,
+    getRowId: (row: IRefundItem, index) => row.id + '-' + index,
     state: {
       pagination: pendingPagination,
       sorting: pendingSorting,
@@ -117,7 +117,7 @@ export default function RefundsList({
   const approvedTable = useReactTable({
     columns,
     data: approvedData,
-    getRowId: (row: IRefundItem) => row.id,
+    getRowId: (row: IRefundItem, index) => row.id + '-' + index,
     state: {
       pagination: approvedPagination,
       sorting: approvedSorting,
@@ -136,7 +136,7 @@ export default function RefundsList({
   const rejectedTable = useReactTable({
     columns,
     data: rejectedData,
-    getRowId: (row: IRefundItem) => row.id,
+    getRowId: (row: IRefundItem, index) => row.id + '-' + index,
     state: {
       pagination: rejectedPagination,
       sorting: rejectedSorting,

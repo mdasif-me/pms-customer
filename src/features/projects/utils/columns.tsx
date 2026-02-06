@@ -19,11 +19,9 @@ export const createColumns = (
       <DataGridColumnHeader title="S/N" visibility={true} column={column} />
     ),
     cell: ({ row, table }) => {
-      const pageIndex = table.getState().pagination.pageIndex
-      const pageSize = table.getState().pagination.pageSize
-      const paginatedRows = table.getPaginationRowModel().rows
-      const rowIndexInPage = paginatedRows.findIndex((r) => r.id === row.id)
-      return pageIndex * pageSize + rowIndexInPage + 1
+      const allRows = table.getSortedRowModel().rows
+      const globalIndex = allRows.findIndex((r) => r.id === row.id)
+      return globalIndex !== -1 ? globalIndex + 1 : row.index + 1
     },
     enableSorting: false,
     size: 100,

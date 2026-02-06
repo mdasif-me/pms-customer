@@ -140,7 +140,7 @@ export default function WithdrawalsList({
   const approvedTable = useReactTable({
     columns: withdrawalColumns,
     data: approvedWithdrawals,
-    getRowId: (row: IWithdrawalItem) => row.id,
+    getRowId: (row: IWithdrawalItem, index) => row.id + index + 1,
     state: {
       pagination: approvedPagination,
       sorting: approvedSorting,
@@ -159,7 +159,7 @@ export default function WithdrawalsList({
   const rejectedTable = useReactTable({
     columns: withdrawalColumns,
     data: rejectedWithdrawals,
-    getRowId: (row: IWithdrawalItem) => row.id,
+    getRowId: (row: IWithdrawalItem, index) => row.id + index + 1,
     state: {
       pagination: rejectedPagination,
       sorting: rejectedSorting,
