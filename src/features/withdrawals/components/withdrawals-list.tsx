@@ -44,8 +44,15 @@ export default function WithdrawalsList({
       pageSize: 10,
     },
   )
+  const [rejectedPagination, setRejectedPagination] = useState<PaginationState>(
+    {
+      pageIndex: 0,
+      pageSize: 10,
+    },
+  )
   const [pendingSorting, setPendingSorting] = useState<SortingState>([])
   const [approvedSorting, setApprovedSorting] = useState<SortingState>([])
+  const [rejectedSorting, setRejectedSorting] = useState<SortingState>([])
 
   const { data: pendingData, isLoading: pendingLoading } = useWithdrawals({
     project_id: projectId,
@@ -59,6 +66,12 @@ export default function WithdrawalsList({
     status: 'approved',
   })
 
+  const { data: rejectedData, isLoading: rejectedLoading } = useWithdrawals({
+    project_id: projectId,
+    booking_id: bookingId || '',
+    status: 'rejected',
+  })
+
   const pendingWithdrawals = useMemo(() => {
     return pendingData?.edges?.flatMap((edge) => edge.data) || []
   }, [pendingData])
@@ -66,6 +79,10 @@ export default function WithdrawalsList({
   const approvedWithdrawals = useMemo(() => {
     return approvedData?.edges?.flatMap((edge) => edge.data) || []
   }, [approvedData])
+
+  const rejectedWithdrawals = useMemo(() => {
+    return rejectedData?.edges?.flatMap((edge) => edge.data) || []
+  }, [rejectedData])
 
   // const availableBalance = useMemo(() => {
   //   const totalPaid = pendingWithdrawals[0]?.total_paid || 0
@@ -80,6 +97,10 @@ export default function WithdrawalsList({
   )
 
   const [approvedColumnOrder, setApprovedColumnOrder] = useState<string[]>(
+    withdrawalColumns.map((column: any) => column.id as string),
+  )
+
+  const [rejectedColumnOrder, setRejectedColumnOrder] = useState<string[]>(
     withdrawalColumns.map((column: any) => column.id as string),
   )
 
@@ -115,6 +136,25 @@ export default function WithdrawalsList({
     onColumnOrderChange: setApprovedColumnOrder,
     onPaginationChange: setApprovedPagination,
     onSortingChange: setApprovedSorting,
+    getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+  })
+
+  const rejectedTable = useReactTable({
+    columns: withdrawalColumns,
+    data: rejectedWithdrawals,
+    getRowId: (row: IWithdrawalItem) => row.id,
+    state: {
+      pagination: rejectedPagination,
+      sorting: rejectedSorting,
+      columnOrder: rejectedColumnOrder,
+    },
+    columnResizeMode: 'onChange',
+    onColumnOrderChange: setRejectedColumnOrder,
+    onPaginationChange: setRejectedPagination,
+    onSortingChange: setRejectedSorting,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -204,6 +244,37 @@ export default function WithdrawalsList({
             <CardToolbar>
               <h2 className="text-xl text-foreground/80 font-semibold tracking-tight">
                 Approved Withdrawals
+              </h2>
+            </CardToolbar>
+          </CardHeader>
+          <CardTable>
+            <ScrollArea>
+              <DataGridTable />
+              <ScrollBar orientation="horizontal" />
+            </ScrollArea>
+          </CardTable>
+          <CardFooter>
+            <DataGridPagination />
+          </CardFooter>
+        </Card>
+      </DataGrid>
+
+      <DataGrid
+        table={rejectedTable}
+        recordCount={rejectedWithdrawals.length}
+        tableLayout={{
+          columnsPinnable: true,
+          columnsResizable: true,
+          columnsMovable: true,
+          columnsVisibility: true,
+        }}
+        isLoading={rejectedLoading}
+      >
+        <Card>
+          <CardHeader className="py-4">
+            <CardToolbar>
+              <h2 className="text-xl text-foreground/80 font-semibold tracking-tight">
+                Rejected Withdrawals
               </h2>
             </CardToolbar>
           </CardHeader>

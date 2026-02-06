@@ -34,7 +34,7 @@ export default function UpdateProfileForm({
         <div className="space-y-4">
           <div className="space-y-2">
             <h3 className="font-medium text-sm">
-              Company Logo <span className="text-destructive">*</span>
+              Upload Photo <span className="text-destructive">*</span>
             </h3>
             <Upload
               maxFiles={10}
