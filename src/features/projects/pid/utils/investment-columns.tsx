@@ -17,7 +17,9 @@ export const investmentColumns: ColumnDef<IInvestmentItem, any>[] = [
     cell: ({ row, table }) => {
       const pageIndex = table.getState().pagination.pageIndex
       const pageSize = table.getState().pagination.pageSize
-      return pageIndex * pageSize + row.index + 1
+      const paginatedRows = table.getPaginationRowModel().rows
+      const rowIndexInPage = paginatedRows.findIndex((r) => r.id === row.id)
+      return pageIndex * pageSize + rowIndexInPage + 1
     },
     enableSorting: false,
     size: 60,
@@ -54,32 +56,6 @@ export const investmentColumns: ColumnDef<IInvestmentItem, any>[] = [
     size: 250,
     enableSorting: false,
     enableHiding: false,
-    enableResizing: true,
-  },
-  {
-    accessorKey: 'type',
-    id: 'type',
-    header: ({ column }) => (
-      <DataGridColumnHeader title="Type" visibility={true} column={column} />
-    ),
-    cell: ({ row }) => {
-      const typeColors = {
-        booking: 'default',
-        installment: 'info',
-      } as const
-
-      return (
-        <Badge
-          variant={typeColors[row.original.type || 'booking']}
-          className="capitalize"
-        >
-          {row.original.type || 'booking'}
-        </Badge>
-      )
-    },
-    size: 120,
-    enableSorting: false,
-    enableHiding: true,
     enableResizing: true,
   },
   {
@@ -140,6 +116,28 @@ export const investmentColumns: ColumnDef<IInvestmentItem, any>[] = [
       )
     },
     size: 200,
+    enableSorting: false,
+    enableHiding: true,
+    enableResizing: true,
+  },
+  {
+    accessorKey: 'received_at',
+    id: 'received_at',
+    header: ({ column }) => (
+      <DataGridColumnHeader title="Date" visibility={true} column={column} />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="font-medium text-foreground">
+          {new Date(row.original.received_at).toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+          })}
+        </div>
+      )
+    },
+    size: 150,
     enableSorting: false,
     enableHiding: true,
     enableResizing: true,

@@ -16,8 +16,16 @@ export const columns: ColumnDef<IRefundItem>[] = [
     header: ({ column }) => (
       <DataGridColumnHeader column={column} title="No Of Request" />
     ),
-    cell: ({ row }) => {
-      return <div className="text-sm">{row.index + 1}</div>
+    cell: ({ row, table }) => {
+      const pageIndex = table.getState().pagination.pageIndex
+      const pageSize = table.getState().pagination.pageSize
+      const paginatedRows = table.getPaginationRowModel().rows
+      const rowIndexInPage = paginatedRows.findIndex((r) => r.id === row.id)
+      return (
+        <div className="text-sm">
+          {pageIndex * pageSize + rowIndexInPage + 1}
+        </div>
+      )
     },
     enableSorting: false,
   },
