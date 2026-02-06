@@ -57,6 +57,32 @@ export const investmentColumns: ColumnDef<IInvestmentItem, any>[] = [
     enableResizing: true,
   },
   {
+    accessorKey: 'type',
+    id: 'type',
+    header: ({ column }) => (
+      <DataGridColumnHeader title="Type" visibility={true} column={column} />
+    ),
+    cell: ({ row }) => {
+      const typeColors = {
+        booking: 'default',
+        installment: 'info',
+      } as const
+
+      return (
+        <Badge
+          variant={typeColors[row.original.type || 'booking']}
+          className="capitalize"
+        >
+          {row.original.type || 'booking'}
+        </Badge>
+      )
+    },
+    size: 120,
+    enableSorting: false,
+    enableHiding: true,
+    enableResizing: true,
+  },
+  {
     accessorKey: 'allotment_name',
     id: 'allotment_name',
     header: ({ column }) => (

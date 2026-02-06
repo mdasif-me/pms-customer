@@ -15,7 +15,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Tabs, TabsList, TabsPanel, TabsTab } from '@/components/ui/tabs'
 import { useEffect, useMemo, useState } from 'react'
 
 import { Link } from '@tanstack/react-router'
@@ -30,7 +29,6 @@ import {
 } from '@tanstack/react-table'
 import { ChevronLeftIcon } from 'lucide-react'
 import { useProjectInvestments } from '../../hooks'
-import type { IInvestmentItem } from '../../interface'
 import { investmentColumns } from '../utils/investment-columns'
 
 export default function ProjectInvestmentList({
@@ -40,18 +38,12 @@ export default function ProjectInvestmentList({
   projectId: string
   bookingId: string
 }) {
-  const [bookingsPagination, setBookingsPagination] = useState<PaginationState>(
-    {
-      pageIndex: 0,
-      pageSize: 10,
-    },
-  )
-  const [installmentsPagination, setInstallmentsPagination] =
-    useState<PaginationState>({
-      pageIndex: 0,
-      pageSize: 10,
-    })
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  })
   const [statusFilter, setStatusFilter] = useState<string>('all')
+  const [typeFilter, setTypeFilter] = useState<string>('all')
   const [sorting, setSorting] = useState<SortingState>([])
 
   const { data: investmentData, isLoading } = useProjectInvestments(
@@ -74,62 +66,58 @@ export default function ProjectInvestmentList({
     )
   }
 
-  const bookingsData = useMemo(() => {
-    const bookings = investmentData?.edge?.data?.bookings || []
-    if (statusFilter === 'all') return bookings
-    return bookings.filter(
-      (item) => item.status?.toLowerCase() === statusFilter.toLowerCase(),
+  const allInvestments = useMemo(() => {
+    const bookings = (investmentData?.edge?.data?.bookings || []).map(
+      (item) => ({
+        ...item,
+        type: 'booking' as const,
+      }),
     )
-  }, [investmentData, statusFilter])
+    const installments = (investmentData?.edge?.data?.installments || []).map(
+      (item) => ({
+        ...item,
+        type: 'installment' as const,
+      }),
+    )
+    return [...bookings, ...installments]
+  }, [investmentData])
 
-  const installmentsData = useMemo(() => {
-    const installments = investmentData?.edge?.data?.installments || []
-    if (statusFilter === 'all') return installments
-    return installments.filter(
-      (item) => item.status?.toLowerCase() === statusFilter.toLowerCase(),
-    )
-  }, [investmentData, statusFilter])
+  const filteredData = useMemo(() => {
+    let filtered = allInvestments
+
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter(
+        (item) => item.status?.toLowerCase() === statusFilter.toLowerCase(),
+      )
+    }
+
+    if (typeFilter !== 'all') {
+      filtered = filtered.filter((item) => item.type === typeFilter)
+    }
+
+    return filtered
+  }, [allInvestments, statusFilter, typeFilter])
 
   useEffect(() => {
-    setBookingsPagination({ pageIndex: 0, pageSize: 10 })
-    setInstallmentsPagination({ pageIndex: 0, pageSize: 10 })
-  }, [statusFilter])
+    setPagination({ pageIndex: 0, pageSize: 10 })
+  }, [statusFilter, typeFilter])
 
   const [columnOrder, setColumnOrder] = useState<string[]>(
     investmentColumns.map((column: any) => column.id as string),
   )
 
-  const bookingsTable = useReactTable({
+  const table = useReactTable({
     columns: investmentColumns,
-    data: bookingsData,
-    getRowId: (row: IInvestmentItem) => `booking-${row.booking_id}`,
+    data: filteredData,
+    getRowId: (row, index) => `${row.type}-${row.booking_id}-${index}`,
     state: {
-      pagination: bookingsPagination,
+      pagination,
       sorting,
       columnOrder,
     },
     columnResizeMode: 'onChange',
     onColumnOrderChange: setColumnOrder,
-    onPaginationChange: setBookingsPagination,
-    onSortingChange: setSorting,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-  })
-
-  const installmentsTable = useReactTable({
-    columns: investmentColumns,
-    data: installmentsData,
-    getRowId: (row, index) => `installment-${row.booking_id}-${index}`,
-    state: {
-      pagination: installmentsPagination,
-      sorting,
-      columnOrder,
-    },
-    columnResizeMode: 'onChange',
-    onColumnOrderChange: setColumnOrder,
-    onPaginationChange: setInstallmentsPagination,
+    onPaginationChange: setPagination,
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -161,114 +149,59 @@ export default function ProjectInvestmentList({
         </div>
       </header>
 
-      <Tabs defaultValue="bookings">
-        <div className="border-b">
-          <TabsList variant="underline">
-            <TabsTab value="bookings">Bookings ({bookingsData.length})</TabsTab>
-            <TabsTab value="installments">
-              Installments ({installmentsData.length})
-            </TabsTab>
-          </TabsList>
-        </div>
-
-        <TabsPanel value="bookings">
-          <DataGrid
-            key={`bookings-${statusFilter}`}
-            table={bookingsTable}
-            recordCount={bookingsData.length}
-            tableLayout={{
-              columnsPinnable: true,
-              columnsResizable: true,
-              columnsMovable: true,
-              columnsVisibility: true,
-            }}
-            isLoading={isLoading}
-          >
-            <Card>
-              <CardHeader className="py-4">
-                <CardToolbar>
-                  <h1 className="text-xl text-foreground/80 font-semibold tracking-tight">
-                    Bookings
-                  </h1>
-                </CardToolbar>
-                <CardHeading>
-                  <div className="flex items-center gap-2.5">
-                    <Select
-                      value={statusFilter}
-                      onValueChange={setStatusFilter}
-                    >
-                      <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Filter by status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Status</SelectItem>
-                        <SelectItem value="approved">Approved</SelectItem>
-                        <SelectItem value="pending">Pending</SelectItem>
-                        <SelectItem value="rejected">Rejected</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </CardHeading>
-              </CardHeader>
-              <CardTable>
-                <ScrollArea>
-                  <DataGridTable />
-                  <ScrollBar orientation="horizontal" />
-                </ScrollArea>
-              </CardTable>
-            </Card>
-          </DataGrid>
-        </TabsPanel>
-
-        <TabsPanel value="installments">
-          <DataGrid
-            key={`installments-${statusFilter}`}
-            table={installmentsTable}
-            recordCount={installmentsData.length}
-            tableLayout={{
-              columnsPinnable: true,
-              columnsResizable: true,
-              columnsMovable: true,
-              columnsVisibility: true,
-            }}
-            isLoading={isLoading}
-          >
-            <Card>
-              <CardHeader className="py-4">
-                <CardToolbar>
-                  <h1 className="text-xl text-foreground/80 font-semibold tracking-tight">
-                    Installments
-                  </h1>
-                </CardToolbar>
-                <CardHeading>
-                  <div className="flex items-center gap-2.5">
-                    <Select
-                      value={statusFilter}
-                      onValueChange={setStatusFilter}
-                    >
-                      <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Filter by status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Status</SelectItem>
-                        <SelectItem value="approved">Approved</SelectItem>
-                        <SelectItem value="pending">Pending</SelectItem>
-                        <SelectItem value="rejected">Rejected</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </CardHeading>
-              </CardHeader>
-              <CardTable>
-                <ScrollArea>
-                  <DataGridTable />
-                  <ScrollBar orientation="horizontal" />
-                </ScrollArea>
-              </CardTable>
-            </Card>
-          </DataGrid>
-        </TabsPanel>
-      </Tabs>
+      <DataGrid
+        key={`all-${statusFilter}-${typeFilter}`}
+        table={table}
+        recordCount={filteredData.length}
+        tableLayout={{
+          columnsPinnable: true,
+          columnsResizable: true,
+          columnsMovable: true,
+          columnsVisibility: true,
+        }}
+        isLoading={isLoading}
+      >
+        <Card>
+          <CardHeader className="py-4">
+            <CardToolbar>
+              <h1 className="text-xl text-foreground/80 font-semibold tracking-tight">
+                All Transactions
+              </h1>
+            </CardToolbar>
+            <CardHeading>
+              <div className="flex items-center gap-2.5">
+                <Select value={typeFilter} onValueChange={setTypeFilter}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Filter by type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Types</SelectItem>
+                    <SelectItem value="booking">Booking</SelectItem>
+                    <SelectItem value="installment">Installment</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Filter by status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Status</SelectItem>
+                    <SelectItem value="approved">Approved</SelectItem>
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="rejected">Rejected</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </CardHeading>
+          </CardHeader>
+          <CardTable>
+            <ScrollArea>
+              <DataGridTable />
+              <ScrollBar orientation="horizontal" />
+            </ScrollArea>
+          </CardTable>
+        </Card>
+      </DataGrid>
     </div>
   )
 }

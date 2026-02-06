@@ -11,6 +11,8 @@ import { DataGridTable } from '@/components/ui/data-grid-table'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { useMemo, useState } from 'react'
 
+import { useRefunds } from '@/features/refunds/hooks'
+import { calculateAvailableBalance } from '@/utils/calculate-balance'
 import { Link } from '@tanstack/react-router'
 import {
   getCoreRowModel,
@@ -72,6 +74,18 @@ export default function WithdrawalsList({
     status: 'rejected',
   })
 
+  const { data: allWithdrawalsData } = useWithdrawals({
+    project_id: projectId,
+    booking_id: bookingId || '',
+    status: 'all',
+  })
+
+  const { data: allRefundsData } = useRefunds({
+    project_id: projectId,
+    booking_id: bookingId || '',
+    status: 'all',
+  })
+
   const pendingWithdrawals = useMemo(() => {
     return pendingData?.edges?.flatMap((edge) => edge.data) || []
   }, [pendingData])
@@ -84,13 +98,13 @@ export default function WithdrawalsList({
     return rejectedData?.edges?.flatMap((edge) => edge.data) || []
   }, [rejectedData])
 
-  // const availableBalance = useMemo(() => {
-  //   const totalPaid = pendingWithdrawals[0]?.total_paid || 0
-  //   const totalWithdrawal =
-  //     pendingWithdrawals.reduce((sum, item) => sum + item.total_withdrawal, 0) +
-  //     approvedWithdrawals.reduce((sum, item) => sum + item.total_withdrawal, 0)
-  //   return totalPaid - totalWithdrawal
-  // }, [pendingWithdrawals, approvedWithdrawals])
+  const balanceInfo = useMemo(() => {
+    const allWithdrawals =
+      allWithdrawalsData?.edges?.flatMap((edge) => edge.data) || []
+    const allRefunds = allRefundsData?.edges?.flatMap((edge) => edge.data) || []
+
+    return calculateAvailableBalance(allWithdrawals, allRefunds)
+  }, [allWithdrawalsData, allRefundsData])
 
   const [pendingColumnOrder, setPendingColumnOrder] = useState<string[]>(
     withdrawalColumns.map((column: any) => column.id as string),
@@ -184,18 +198,76 @@ export default function WithdrawalsList({
           </article>
         </div>
         <div className="flex items-center gap-4">
-          {/* <div className="text-lg font-semibold text-foreground">
-            Available Balance:{' '}
-            <span className="text-primary text-2xl font-bold">
+          <div className="text-right">
+            <div className="text-xs text-muted-foreground mb-1">
+              Available Balance
+            </div>
+            <div className="text-2xl font-bold text-primary">
               ৳
-              {availableBalance?.toLocaleString('en-IN', {
+              {balanceInfo.availableBalance.toLocaleString('en-IN', {
                 minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
               })}
-            </span>
-          </div> */}
+            </div>
+          </div>
           <WithdrawalRequest projectId={projectId} bookingId={bookingId} />
         </div>
       </header>
+
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card>
+          <div className="p-4">
+            <p className="text-sm text-muted-foreground mb-1">Total Paid</p>
+            <p className="text-xl font-semibold">
+              ৳
+              {balanceInfo.totalPaid.toLocaleString('en-IN', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+              })}
+            </p>
+          </div>
+        </Card>
+        <Card>
+          <div className="p-4">
+            <p className="text-sm text-muted-foreground mb-1">
+              Total Withdrawn
+            </p>
+            <p className="text-xl font-semibold text-orange-600">
+              ৳
+              {balanceInfo.totalWithdrawal.toLocaleString('en-IN', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+              })}
+            </p>
+          </div>
+        </Card>
+        <Card>
+          <div className="p-4">
+            <p className="text-sm text-muted-foreground mb-1">Total Refund</p>
+            <p className="text-xl font-semibold text-red-600">
+              ৳
+              {balanceInfo.totalRefund.toLocaleString('en-IN', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+              })}
+            </p>
+          </div>
+        </Card>
+        <Card>
+          <div className="p-4">
+            <p className="text-sm text-muted-foreground mb-1">
+              Total Deduction
+            </p>
+            <p className="text-xl font-semibold text-destructive">
+              ৳
+              {balanceInfo.totalDeduction.toLocaleString('en-IN', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+              })}
+            </p>
+          </div>
+        </Card>
+      </div>
 
       <DataGrid
         table={pendingTable}

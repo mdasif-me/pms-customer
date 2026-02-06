@@ -14,7 +14,7 @@ export interface IWithdrawalItem {
 export interface IWithdrawalParams {
   project_id: string
   booking_id: string
-  status?: 'pending' | 'approved' | 'rejected'
+  status?: 'pending' | 'approved' | 'rejected' | 'all'
 }
 
 export interface IWithdrawalResponse {

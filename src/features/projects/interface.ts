@@ -58,6 +58,7 @@ export interface IInvestmentItem {
   sell_by: string
   received_at: string
   status: 'approved' | 'pending' | 'rejected'
+  type?: 'booking' | 'installment'
 }
 
 export interface IProjectInvestmentData {
